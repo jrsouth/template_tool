@@ -1,0 +1,23 @@
+<!-- Basic HTML, parsed as-is -->
+
+<p>This tool can be used to generate on-brand posters, flyers, invitations and other promotional material.</p>
+
+<p>There are three simple steps when creating your document:</p>
+
+<h3>1. Select a starting template</h2>
+
+<p>There are a <a href="index.php?step=1">variety of templates available</a>, choose the one that best suits your needs.</p>
+
+
+<h3>2. Customise your document</h2>
+
+<p>Fill in the details as you like. You can preview and make changes as much as you like.</p>
+
+
+<h3>3. Download your fundraising materials</h2>
+
+<p>Once downloaded (as a PDF) you can email, print or otherwise distribute your fundraising material.</p>
+
+<hr /><br />
+
+<p><a style="font-size: 1.5em;" href="index.php?step=1">Get started &#187;</a></p>

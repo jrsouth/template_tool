@@ -1,0 +1,126 @@
+@import url('style.css');
+
+html {
+overflow-y: scroll;
+}
+
+h2 {
+    font-size: 1.8em;
+    text-transform: uppercase;
+    color: #000000;
+    clear: both;
+}
+
+h2 sub {
+ font-size: .6em;
+ color: #cccccc;
+ vertical-align: middle;
+ font-family: 'Bliss Pro Regular', 'Lucida Sans', 'Lucida Grande', sans-serif;
+}
+
+h3 {
+    font-family: 'Bliss Pro Heavy', 'Bliss Pro ExtraBold', 'Lucida Sans', 'Lucida Grande', sans-serif;
+    color: #666666;
+    padding: .5em 0;
+    font-size: 1.5em;
+    margin-top: 1em;
+    margin-bottom: .5em;
+    border-bottom: 1px solid #cccccc;
+    text-transform: uppercase;
+    clear: both;
+}
+
+.list-2-1, .list-2-2 {
+    width: 50%;
+    float: left;
+}
+
+.list-2.1 {
+    clear: both; 
+}
+
+div.top-tabs {
+    font-family: 'Bliss Pro Heavy', 'Bliss Pro ExtraBold', 'Lucida Sans', 'Lucida Grande', sans-serif;
+    color: #666666;
+    padding: .5em 0;
+    font-size: 1.5em;
+    margin-top: 1em;
+    margin-bottom: .5em;
+    text-transform: uppercase;
+    clear: both;
+}
+
+div.top-tab {
+  float: left;
+  margin-right: 1em;
+  padding: .5em;
+  cursor: pointer; 
+  line-height: 1ex;
+  
+}
+
+ul.basic-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: square;
+    list-style-position: inside;
+}
+
+ul.basic-list li {
+    margin: 1em 0;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.fake-link {
+ cursor: pointer; 
+  }
+
+table {
+ border-collapse: collapse; 
+ width: 100%;
+}
+
+table.editor td {
+ border-collapse: collapse; 
+ padding: .5em; 
+ border: 1px solid #333333;
+ vertical-align: top;
+}
+
+tr.header {
+    font-family: 'Bliss Pro Light', 'Lucida Sans', sans-serif;
+    background: #cccccc;
+}
+
+tr.header td {
+    font-size: 1.6em;
+    padding: .4em;
+    padding-bottom: 0;
+    margin: 0;
+}
+
+td.field-menu {
+ width: 10em; 
+ height: 18em;
+}
+
+input, textarea {
+	font-family: sans-serif;
+	border: 1px solid #666666;
+	background-color: #dddddd;
+	margin: 0 0 1em 0;
+	width: auto;
+}
+
+input.short {
+ width: 4em; 
+}
+
+div.delete-box {
+    background-color: #ffcccc;
+    padding: 10px;
+    border: 1px solid #cc6666;
+}
