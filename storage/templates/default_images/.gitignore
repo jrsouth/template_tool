@@ -2,5 +2,3 @@
 *
 # Except this file
 !.gitignore
-# And except the default_images directory
-!default_images/
