@@ -1,2 +1,8 @@
+# Ignore local settings file
 settings.php
+
+# Ignore phptidy configuration file and backup files
+.phptidy-config.php
+.phptidy-cache
+*.phptidybak~
 

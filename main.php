@@ -1,9 +1,21 @@
 <?php
-  require('functions.php');
-  require('process.php');
+/**
+ * main.php
+ *
+ * @author jrsouth (GitHub)
+ * @package template_tool
+ */
+
+
+// Require function and class files, and run process.php to handle input
+require 'functions.php';
+require 'process.php';
+
+// Output XML header
+echo '<?xml version="1.0" encoding="utf-8" ?>';
+
 ?>
 
-<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -11,7 +23,7 @@
 <head>
 	<title>LLR - Template Tool</title>
 	<link rel="stylesheet" type="text/css" href="style.css" />
-	<script src="functions.js" type="text/javascript"> </script>	
+	<script src="functions.js" type="text/javascript"> </script>
 </head>
 
 <body>
@@ -30,7 +42,7 @@
 displayProgressBar($stage);
 
 
-switch($stage) {
+switch ($stage) {
 case 0 :
 ?>
 
@@ -38,7 +50,7 @@ case 0 :
 <h2><span style="color:#000000;">Step 1:</span> Select base template</h2>
 <!-- Code to retrieve availabe templates from the database and select one -->
 <?php
-displayAvailableTemplates() 
+    displayAvailableTemplates()
 ?>
 
 
@@ -46,7 +58,7 @@ displayAvailableTemplates()
 
 
 <?php
-break;
+    break;
 case 1 :
 ?>
 
@@ -64,7 +76,7 @@ case 1 :
 
 
 <?php
-break;
+    break;
 case 2 :
 ?>
 
@@ -76,7 +88,7 @@ case 2 :
 
 
 <?php
-break;
+    break;
 case 3 :
 ?>
 
@@ -89,7 +101,7 @@ case 3 :
 </div>
 
 <?php
-break;
+    break;
 }
 ?>
 <br style="clear:both;" />

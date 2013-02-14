@@ -1,4 +1,12 @@
 <?php
+/**
+ * utilities.php
+ *
+ * @author jrsouth (GitHub)
+ * @package template_tool
+ */
+
+
 /* ---------------------------------------------------------- /*
 Various cleanup and tidy up scripts
 
@@ -17,39 +25,39 @@ $success = true;
 
 if (isset($_GET['action'])) {
 
-  switch ($_GET['action']) {
+	switch ($_GET['action']) {
 
-  
-    case 'clearTemplateCache' :
-	      
-	      $message = 'Template cache cleared XXX NOT YET IMPLEMENTED';
-	      $success = false;
-	      break;
-    
-    
-    
-    case 'clearWorkingTemplates' :
-	      
-	      $message = 'Template cache cleared XXX NOT YET IMPLEMENTED';
-	      $success = false;
-	      break;
-    
-    
-    
-    case 'clearImageUploadCache' :
-	      
-	      $message = 'Image uploads cleared XXX NOT YET IMPLEMENTED';
-	      $success = false;
-	      break;
-    
-    
-    
-  
-  
-  }
+
+	case 'clearTemplateCache' :
+
+		$message = 'Template cache cleared XXX NOT YET IMPLEMENTED';
+		$success = false;
+		break;
+
+
+
+	case 'clearWorkingTemplates' :
+
+		$message = 'Template cache cleared XXX NOT YET IMPLEMENTED';
+		$success = false;
+		break;
+
+
+
+	case 'clearImageUploadCache' :
+
+		$message = 'Image uploads cleared XXX NOT YET IMPLEMENTED';
+		$success = false;
+		break;
+
+
+
+
+
+	}
 
 }
-  
+
 
 ?>
 
@@ -98,7 +106,7 @@ a:hover {
 <?php
 
 if ($message != '') {
-  echo('<div class="'.($success?'success':'failure').'">'.$message.'</div>');
+	echo '<div class="'.($success?'success':'failure').'">'.$message.'</div>';
 }
 
 ?>

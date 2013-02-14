@@ -1,4 +1,11 @@
 <?php
+/**
+ * settings-default.php
+ *
+ * @author jrsouth (GitHub)
+ * @package template_tool
+ */
+
 
 $debug = true;
 
