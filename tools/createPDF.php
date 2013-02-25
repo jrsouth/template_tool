@@ -167,6 +167,9 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 			if (isset($working_template['f'.$field['id']])) {
 				$content = $working_template['f'.$field['id']];
 			}
+			
+			// Change encoding HACK
+			$content = iconv('UTF-8', 'windows-1252', $content);
 
 			// Force to UPPERCASE if required
 			if ($field['force_uppercase']) {
