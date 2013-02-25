@@ -169,7 +169,7 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 			}
 			
 			// Change encoding (FPDF doesn't handle UTF-8)
-			$content = iconv('UTF-8', 'ISO-8859-1', $content);
+			$content = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $content);
 
 			// Force to UPPERCASE if required
 			if ($field['force_uppercase']) {
