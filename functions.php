@@ -361,7 +361,6 @@ function displayForm() {
 			echo '<br /><span class="field-current-image"><strong>&nbsp;&nbsp;&nbsp;&bullet;&nbsp;Current file:</strong> '.substr(basename($local_imgfile), 14).'</span></p>';
 		}
 
-
 	}
 
 	foreach ($fields as $field) { // display fields in order

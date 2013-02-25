@@ -72,22 +72,6 @@ if ($working_template_id) {
 
 }
 
-// Need a better way of determining that the form has been submitted. Should be easy.
-
-
-if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
-	$sql = 'SELECT * FROM templates WHERE id = ' . $_POST['template_id'];
-	$results = mysql_query($sql);
-	if (mysql_num_rows($results) == 1) {
-		$template = mysql_fetch_assoc($results);
-	}
-}
-
-if (isset($_POST['update_working_template'])) {
-	updateWorkingTemplateData();
-}
-
-
 
 
 if (isset($_FILES)) { // Process any input files
@@ -105,6 +89,22 @@ if (isset($_FILES)) { // Process any input files
 			}
 	}
 }
+
+
+// Need a better way of determining that the form has been submitted. Should be easy.
+
+if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
+	$sql = 'SELECT * FROM templates WHERE id = ' . $_POST['template_id'];
+	$results = mysql_query($sql);
+	if (mysql_num_rows($results) == 1) {
+		$template = mysql_fetch_assoc($results);
+	}
+}
+
+if (isset($_POST['update_working_template'])) {
+	updateWorkingTemplateData();
+}
+
 
 // Set $stage
 if (isset($_GET['step'])) {
