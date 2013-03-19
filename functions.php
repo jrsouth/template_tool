@@ -48,29 +48,24 @@ function displayProgressBar($step) {
 	$flag = 0;
 	$start = 1;
 	$end = count($stages)-1;
-	echo '<div id="progressbar">';
+	echo '<div id="progressbar"><p>';
 
 	foreach ($stages as $key => $stage) {
-		if ($start == 1) {
-			echo '<div style="width:16px;background-image:url(\'images/form-progress-start-' . (($key == $index)?'on':'off') . '.png\');" />&nbsp;</div>';
-			$start = 0;
-		}
 
-		echo '<div class="progressbar-text" style="'.(($key == $index)?'color: #ffffff;':'').'padding-left:10px;padding-right:10px;background-image:url(\'images/form-progress-bg-'.(($key == $index)?'on':'off').'.png\')">';
+		echo '<span class="progressbar-text'.(($key == $index)?'-active':'').(($key == 0)?' progressbar-text-first':'').'">';
 		$isLink = ($key != $index && $stage[1]!='');
 		echo ($isLink?'<a href="'.$stage[1].'">':'').$stage[0].($isLink?'</a>':'');
-		echo '</div>';
+		echo '</span>';
 
-		if ($key == $end) {
-			echo '<div style="width:16px;background-image:url(\'images/form-progress-end-' . (($key == $index)?'on':'off') . '.png\');" />&nbsp;</div>';
-		} else {
+		if ($key != $end) {
 			$jointype = 'normal';
 			if ($key == $index) {$jointype = 'off';}
 			if ($key+1 == $index) {$jointype = 'on';}
-			echo '<div style="width:16px;background-image:url(\'images/form-progress-join-' . $jointype . '.png\');" />&nbsp;</div>';
+			echo ' &#0187; ';
 		}
 	}
-	echo '</div>';
+
+	echo '</p></div>';
 
 
 	// echo('<a href="index.php"><p class="main-link">Restart</p></a>');
@@ -82,23 +77,70 @@ function displayProgressBar($step) {
  *
  */
 function displayAvailableTemplates() {
+global $default_templates_layout, $default_templates_available;
 
-	if (isset($_GET['show_all'])) {
-		echo '<p>Displaying all templates. (<a href="'.$_SERVER['PHP_SELF'].'?step=1">Show only active</a>)</p>';
-	} else {
-		echo '<p>Only displaying active templates. (<a href="'.$_SERVER['PHP_SELF'].'?step=1&show_all=y">Show all templates</a>)</p>';
+	$layouts = Array('grid', 'list');
+	$access_levels = Array('active', 'all');
+
+	$templates_layout = $default_templates_layout;
+	if (isset($_GET['templates_layout']) && array_search($_GET['templates_layout'], $layouts) !== false) {
+	    $templates_layout = $_GET['templates_layout'];
 	}
 
-	$sql = 'SELECT * FROM `templates`'.(!isset($_GET['show_all'])?' WHERE `active` = 1':'').' ORDER BY `name`';
+	$templates_available = $default_templates_available;
+	if (isset($_GET['templates_available']) && array_search($_GET['templates_available'], $access_levels) !== false) {
+	    $templates_available = $_GET['templates_available'];
+	}
+
+
+	// Display heading
+	echo('<p class="inline-selector">Display [ ');
+	foreach ($layouts as $key => $layout) {
+	    if ($layout == $templates_layout) {
+		echo('<strong>' . $layout . '</strong> ');
+	    } else {
+		echo('<a href="'.$_SERVER['PHP_SELF'].'?step=1&templates_layout='.$layout.'&templates_available='.$templates_available.'" title="Display templates as '.$layout.'">'.$layout.'</a> ');
+	    }
+	    if ($key+1 < count($layouts)) {
+		echo('&#124; ');
+	    }
+	}
+	echo(' ] &nbsp;&nbsp;&nbsp;&nbsp; Filter [ ');
+	foreach ($access_levels as $key => $access_level) {
+	    if ($access_level == $templates_available) {
+		echo('<strong>' . $access_level . '</strong> ');
+	    } else {
+		echo('<a href="'.$_SERVER['PHP_SELF'].'?step=1&templates_layout='.$templates_layout.'&templates_available='.$access_level.'" title="Display '.$access_level.' templates">'.$access_level.'</a> ');
+	    }
+	    if ($key+1 < count($access_levels)) {
+		echo('&#124; ');
+	    }
+	}
+	echo(']</p>');
+
+
+	echo('<hr />');
+
+
+	// HACK Need better SQL generation
+	$sql = 'SELECT * FROM `templates`'.($templates_available == 'active'?' WHERE `active` = 1':'').' ORDER BY `name`';
 
 	$results = mysql_query($sql);
 
 	if ($results) {
-		while ($template = mysql_fetch_assoc($results)) {
-			echo '<div class="thumbnail">';
-			echo '<p>'.$template['name'].'<br />';
-			echo '<a href="index.php?template_id='.$template['id'].'&reset=1&step=2"><img src="tools/createPDF.php?view=thumbnail&template_id='.$template['id'].'" class="thumb" /></a></p></div>';
+	    echo('<div class="template-display-'.$templates_layout.'">');
+	    $odd_row = true;
+	    while ($template = mysql_fetch_assoc($results)) {
+		    echo '<div'.($odd_row?' class="odd" ':'').'>';
+		    echo '<p>';
+		    echo '<a href="index.php?template_id='.$template['id'].'&reset=1&step=2">'.$template['name'].'</a>';
+		    echo '</p>';
+		    echo '<a href="index.php?template_id='.$template['id'].'&reset=1&step=2"><img src="tools/createPDF.php?view=thumbnail&template_id='.$template['id'].'" class="thumb" /></a>';
+		    echo '<br class="clear" />';
+		echo('</div>');
+		$odd_row = !$odd_row;
 		}
+	    echo('</div>');
 	} else { // No results
 		echo '<p style="color:#cc0000;"><em>No templates found</em></p>';
 	}
@@ -110,7 +152,7 @@ function displayAvailableTemplates() {
  *
  */
 function displayCurrentPreview() {
-	global $template, $working_template_id;
+	global $template, $working_template_id, $preview_size;
 
 
 	$params = '&template_id='.$template['id'];
@@ -134,17 +176,18 @@ function displayCurrentPreview() {
 	}
 
 	if ($working_template_id > 0) {
-		echo '<a href="tools/createPDF.php?working_template_id='.$working_template_id.'">Download Now (right-click to save as)</a>';
 		for ($currentpage = 1; $currentpage <= $template['pagecount'] ; $currentpage++) {
+			echo '<img width="'.$preview_size.'" src="tools/createPDF.php?working_template_id='.$working_template_id.'&view=preview&page='.$currentpage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 			echo '<br />';
-			echo '<img src="tools/createPDF.php?working_template_id='.$working_template_id.'&view=preview&page='.$currentpage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 		}
+		echo '&#0187; <a href="tools/createPDF.php?working_template_id='.$working_template_id.'">Download Now (right-click to save as)</a>';
+
 	} else {
-		echo '<a href="tools/createPDF.php?template_id='.$template['id'].'">Download Now (right-click to save as)</a>';
 		for ($currentpage = 1; $currentpage <= $template['pagecount'] ; $currentpage++) {
+			echo '<img width="'.$preview_size.'" src="tools/createPDF.php?template_id='.$template['id'].'&view=preview&page='.$currentpage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 			echo '<br />';
-			echo '<img src="tools/createPDF.php?template_id='.$template['id'].'&view=preview&page='.$currentpage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 		}
+		echo '&#0187; <a href="tools/createPDF.php?template_id='.$template['id'].'">Download Now (right-click to save as)</a>';
 	}
 
 }
@@ -206,7 +249,7 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 
 	$thumbnail_location = $cache_path . 'thumbnails/template_'.$templateID.'.jpg';
 	$preview_location = $cache_path . 'default/template_'.$templateID.'_p' . $page . '.jpg';
-	
+
 	if ($view == 'preview') {
 		$xsize = $preview_size;
 		$ysize = 2000;
@@ -216,7 +259,7 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 	}
 
 	$pdffile .= '[0]'; // DisplayPDF is used for outputing images of single-page PDFs // '.($page-1).']';
-	
+
 	$im = new imagick($pdffile);
 	$im = $im->flattenImages();
 	$im->setCompression(Imagick::COMPRESSION_JPEG);
@@ -338,7 +381,7 @@ function displayForm() {
 		echo '<input type="hidden" name="working_template_id" value="'.$working_template_id.'" />';
 	}
 
-	echo '<input type="submit" name="update_working_template" value="Update the preview" /><hr />';
+	echo '<input type="submit" name="update_working_template" value="Update the preview" />';
 
 
 	foreach ($images as $image) { // display image fields in order
@@ -382,7 +425,7 @@ function displayForm() {
 		echo '</p>';
 	}
 
-	echo '<hr /><input type="submit" name="update_working_template" value="Update the preview" />';
+	echo '<input type="submit" name="update_working_template" value="Update the preview" />';
 
 	echo '</form>';
 }

@@ -31,11 +31,13 @@ echo '<?xml version="1.0" encoding="utf-8" ?>';
 
 <?php require $content_path . 'header.chunk'; ?>
 
-<?php
+<hr />
 
+<?php
 
 if ($step > 0) {
 	displayProgressBar($step);
+	echo('<hr />');
 }
 
 switch ($step) {
@@ -48,7 +50,7 @@ case 1 :
 ?>
 
 <div id="step1">
-<h2><span style="color:#000000;">Step 1:</span> Select base template</h2>
+<!-- <h2><span style="color:#000000;">Step 1:</span> Select base template</h2> NOTE REMOVED FOR STYLE -->
 <!-- Code to retrieve availabe templates from the database and select one -->
 <?php
 	displayAvailableTemplates()
@@ -65,15 +67,18 @@ case 2 :
 
 
 <div id="step2">
-<h2><span style="color:#000000;">Step 2:</span> Customise content and review</h2>
-<!-- Form to provide customisable data (submission to return to this page with updated preview) -->
-<div id="form-box">
-<?php displayForm(); ?>
-</div>
+<!-- <h2><span style="color:#000000;">Step 2:</span> Customise content and review</h2> NOTE REMOVED FOR STYLE -->
+
 <!-- Display preview -->
 <div id="preview-box">
 <?php displayCurrentPreview(); ?>
 </div>
+
+<!-- Form to provide customisable data (submission to return to this page with updated preview) -->
+<div id="form-box">
+<?php displayForm(); ?>
+</div>
+
 
 
 <?php
@@ -83,8 +88,8 @@ case 3 :
 
 
 <div id="step3">
-<h2><span style="color:#000000;">Step 3:</span> Create and download PDF</h2>
-<!-- Final preview with download options -->
+<!-- <h2><span style="color:#000000;">Step 3:</span> Create and download PDF</h2> NOTE REMOVED FOR STYLE -->
+<!-- Final preview with download options NOTE not yet implemented -->
 </div>
 
 

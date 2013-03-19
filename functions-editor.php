@@ -24,11 +24,6 @@ function validateTemplatePostData($id) {
 	$sql = '';
 
 
-	// XXX TEMPORARILY PREVENT VALUES FROM BEING SAVED BY FORCING AN ERROR VALUE XXX
-	//$flag++;
-
-
-
 	// PDF Upload/Check
 	$PDFUploaded = false;
 
@@ -39,7 +34,7 @@ function validateTemplatePostData($id) {
 		&& $_FILES[$prefix.'pdf_file']['size'] > 0
 		&& strcasecmp('pdf', pathinfo($_FILES[$prefix.'pdf_file']['name'], PATHINFO_EXTENSION) == 0)
 	) {
-		// Check first 5 bytes for '%PDF-' (Could also be used to check PDF version)
+		// Check first 5 bytes for '%PDF-' (Could also be used to check PDF version in future)
 		$handle = fopen($_FILES[$prefix.'pdf_file']['tmp_name'], 'r');
 		$headerBytes = fread($handle, 5);
 		fclose($handle);
