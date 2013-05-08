@@ -19,9 +19,18 @@ h1, h2 {
 	clear: both;
 }
 
+header img {
+	float: left;
+	margin: 0 0 10px 0;
+}
+
 h1 {
-	margin: .25em 0 .5em 0;
+	display: block;
+	float: left;
+	padding-left: 1em;
 	font-size: 2.5em;
+	clear: none;
+	color:#7c7c7c;
 }
 
 h2 {
