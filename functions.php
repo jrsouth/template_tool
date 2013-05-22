@@ -180,14 +180,15 @@ function displayCurrentPreview() {
 			echo '<img width="'.$preview_size.'" src="tools/createPDF.php?working_template_id='.$working_template_id.'&view=preview&page='.$currentpage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 			echo '<br />';
 		}
-		echo '&#0187; <a href="tools/createPDF.php?working_template_id='.$working_template_id.'">Download Now (right-click to save as)</a>';
+		echo '&#0187; <a href="tools/createPDF.php?working_template_id='.$working_template_id.'">Download PDF now (right-click to save as)</a>';
+		echo '<br />&#0187; <a href="tools/createPDF.php?working_template_id='.$working_template_id.'&view=highres&page=1">Download high-res JPG now (right-click to save as)</a>';
 
 	} else {
 		for ($currentpage = 1; $currentpage <= $template['pagecount'] ; $currentpage++) {
 			echo '<img width="'.$preview_size.'" src="tools/createPDF.php?template_id='.$template['id'].'&view=preview&page='.$currentpage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 			echo '<br />';
 		}
-		echo '&#0187; <a href="tools/createPDF.php?template_id='.$template['id'].'">Download Now (right-click to save as)</a>';
+		echo '&#0187; <a href="tools/createPDF.php?template_id='.$template['id'].'">Download PDF Now (right-click to save as)</a>';
 	}
 
 }
@@ -240,7 +241,7 @@ function updateWorkingTemplateData() {
  * @param unknown $page       (optional)
  */
 function displayPDF($pdffile, $view, $templateID, $page = 1) {
-	global $preview_size, $thumbnail_size, $cache_path;
+	global $preview_size, $thumbnail_size, $highres_size, $cache_path;
 	// Displays a JPEG preview of a given PDF file, saving a thumbnail if applicable
 	// $pdffile is the file
 	// $view is the type of view (thumbnail/preview)
@@ -253,14 +254,22 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 	if ($view == 'preview') {
 		$xsize = $preview_size;
 		$ysize = 2000;
+		$resolution = 150;
+	} else if ($view = 'highres') {
+		$xsize = $highres_size;
+		$ysize = $highres_size;
+		$resolution = 600;
 	} else {
 		$xsize = $thumbnail_size;
 		$ysize = $thumbnail_size;
+		$resolution = 20;
 	}
 
 	$pdffile .= '[0]'; // DisplayPDF is used for outputing images of single-page PDFs // '.($page-1).']';
 
-	$im = new imagick($pdffile);
+	$im = new imagick();
+	$im->setResolution($resolution, $resolution);
+	$im->readImage($pdffile);
 	$im = $im->flattenImages();
 	$im->setCompression(Imagick::COMPRESSION_JPEG);
 	$im->setCompressionQuality(90);

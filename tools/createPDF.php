@@ -15,7 +15,7 @@ $thumbnail_location = $cache_path . 'thumbnails/template_'.$template['id'].'.jpg
 $preview_location = $cache_path . 'default/template_'.$template['id'].'_p' . (isset($_GET['page'])?$_GET['page']:'1') . '.jpg';
 
 
-// Quick check for exisiting thumbnail - serve if available
+// Quick check for exisiting thumbnail or default preview - serve if available
 if (isset($_GET['view']) && $_GET['view'] == 'thumbnail' && file_exists($thumbnail_location)) {
 	header("Content-type: image/jpeg");
 	imagejpeg(imagecreatefromjpeg($thumbnail_location));

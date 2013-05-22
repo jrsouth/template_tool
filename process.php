@@ -10,7 +10,7 @@
  */
 
 
-require 'settings.php';
+require 'settings-default.php';
 
 
 // Create database connection
