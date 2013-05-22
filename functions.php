@@ -255,7 +255,7 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 		$xsize = $preview_size;
 		$ysize = 2000;
 		$resolution = 150;
-	} else if ($view = 'highres') {
+	} else if ($view == 'highres') {
 		$xsize = $highres_size;
 		$ysize = $highres_size;
 		$resolution = 600;
