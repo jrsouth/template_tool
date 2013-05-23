@@ -65,7 +65,7 @@ if (isset($_GET['action'])) {
 		$results = mysql_query($sql);
 		while ($template = mysql_fetch_assoc($results)) {
 		  // Code adapted from AndrewR found at http://stackoverflow.com/questions/9622357/php-get-height-and-width-in-pdf-file-proprieties
-		  $output = shell_exec('pdfinfo -box storage/templates/' . $template['pdf_file']);
+		  $output = shell_exec('pdfinfo -box "storage/templates/' . $template['pdf_file'] . '"');
 		  
 		  // find page count
 		  preg_match('/Pages:\s+([0-9]+)/', $output, $pagecountmatches);
