@@ -58,8 +58,8 @@ if (isset($_GET['action'])) {
 
       case 'updatePDFDetails' :
       
-		$message = 'Updating PDF details (PageCount, Dimensions)';
-		$success = false;
+		$message = '<strong>Updating PDF details (PageCount, Dimensions)</strong>';
+		$success = true;
 		
 		$sql = "SELECT * FROM `templates` ORDER BY `id`";
 		$results = mysql_query($sql);
@@ -78,9 +78,8 @@ if (isset($_GET['action'])) {
 		  
 		  
 		  $sql = 'UPDATE `templates` SET `pagecount` = '.$pagecount.', `width` = '.$width.', `height` = '.$height.' WHERE `id` = '.$template['id'];
-		  echo "<pre>$sql</pre>";
 		  $result = mysql_query($sql);
-		  echo "<pre> &gt;&gt; ".$result?'SUCCESS':'FAILED'."</pre>";
+		  $message = $message . '<pre>'.$sql.'<br /> &gt;&gt; <strong>'.($result?'SUCCESS':'FAILED').'</strong></pre>';
 		}
 		break;
 
