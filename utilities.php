@@ -6,6 +6,12 @@
  * @package template_tool
  */
 
+ // Get database settings
+ require('settings-default.php');
+ 
+ // Create database connection
+$db_connection = mysql_connect($db_server, $db_user, $db_password) or die(mysql_error());
+mysql_select_db($db_database) or die(mysql_error());
 
 /* ---------------------------------------------------------- /*
 Various cleanup and tidy up scripts
@@ -50,9 +56,33 @@ if (isset($_GET['action'])) {
 		$success = false;
 		break;
 
+      case 'updatePDFDetails' :
+      
+		$message = 'Updating PDF details (PageCount, Dimensions)';
+		$success = false;
+		
+		$sql = "SELECT * FROM `templates` ORDER BY `id`";
+		$results = mysql_query($sql);
+		while ($template = mysql_fetch_assoc($results)) {
+		  // Code adapted from AndrewR found at http://stackoverflow.com/questions/9622357/php-get-height-and-width-in-pdf-file-proprieties
+		  $output = shell_exec('pdfinfo -box storage/templates/' . $template['pdf_file']);
+		  
+		  // find page count
+		  preg_match('/Pages:\s+([0-9]+)/', $output, $pagecountmatches);
+		  $pagecount = $pagecountmatches[1];
 
-
-
+		  // find page sizes
+		  preg_match('/Page size:\s+([0-9]{0,5}\.?[0-9]{0,3}) x ([0-9]{0,5}\.?[0-9]{0,3})/', $output, $pagesizematches);
+		  $width = round($pagesizematches[1]/2.83);
+		  $height = round($pagesizematches[2]/2.83);
+		  
+		  
+		  $sql = 'UPDATE `templates` SET `pagecount` = '.$pagecount.', `width` = '.$width.', `height` = '.$height.' WHERE `id` = '.$template['id'];
+		  echo "<pre>$sql</pre>";
+		  $result = mysql_query($sql);
+		  echo "<pre> &gt;&gt; ".$result?'SUCCESS':'FAILED'."</pre>";
+		}
+		break;
 
 	}
 
@@ -118,6 +148,8 @@ if ($message != '') {
 <p>Clear working templates (<a href="utilities.php?action=clearWorkingTemplates&limit=2W">Older than two weeks</a> | <a href="utilities.php?action=clearWorkingTemplates&limit=2W">All</a>)</p>
 
 <p>Clear image upload cache (<a href="utilities.php?action=clearImageUploadCache&limit=2W">Older than two weeks</a> | <a href="utilities.php?action=clearImageUploadCache&limit=2W">All</a>)</p>
+
+<p>Update PDF sizes and page counts (<a href="utilities.php?action=updatePDFDetails">Execute</a>)</p>
 
 
 

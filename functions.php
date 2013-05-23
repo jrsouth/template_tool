@@ -379,10 +379,11 @@ function get_images($template_id, $pageno = 0) {
  *
  */
 function displayForm() {
-	global $template, $working_template_id;
+	global $template, $working_template_id, $preview_size;
 
 	$images = get_images($template['id']);
 	$fields = get_fields($template['id']);
+	$scale = $preview_size/$template['width'];
 
 	echo '<form action="index.php?step=2" method="POST" enctype="multipart/form-data">';
 	echo '<input type="hidden" name="template_id" value="'.$template['id'].'" />';
@@ -407,7 +408,7 @@ function displayForm() {
 			$local_imgfile = $_FILES['img'.$image['id']]['upload'];
 		}
 
-		echo '<input type="file" onmouseover="this.focus();" onfocus="showFieldLocator('.($image['x_position'] + 0.5*$image['width']).','.($image['y_position'] + 0.5*$image['height']).','.$image['page'].');" onblur="hideFieldLocator('.$image['page'].');" class="file-input" name="img'.$image['id'].'" />';
+		echo '<input type="file" onmouseover="this.focus();" onfocus="showFieldLocator('.($image['x_position'] + 0.5*$image['width']).','.($image['y_position'] + 0.5*$image['height']).','.$image['page'].','.$scale.');" onblur="hideFieldLocator('.$image['page'].');" class="file-input" name="img'.$image['id'].'" />';
 
 		if ($local_imgfile != '') { // Insert hidden form field if there's a value (and print)
 			echo '<input type="hidden" name="'.('img'.$image['id'].'hidden').'" value="'.$local_imgfile.'" />';
@@ -438,11 +439,11 @@ function displayForm() {
 		
 		switch ($type) {
 		case 'single_line' :
-			echo '<input type="text" maxlength="'.$field['character_limit'].'" name="f'.$field['id'].'" value="'.$value.'"  onfocus="showFieldLocator('.$location_x.','.$location_y.','.$field['page'].');" onblur="hideFieldLocator('.$field['page'].');"/><br />';
+			echo '<input type="text" maxlength="'.$field['character_limit'].'" name="f'.$field['id'].'" value="'.$value.'"  onfocus="showFieldLocator('.$location_x.','.$location_y.','.$field['page'].','.$scale.');" onblur="hideFieldLocator('.$field['page'].');"/><br />';
 			break;
 
 		case 'multi_line' :
-			echo '<textarea onfocus="showFieldLocator('.$location_x.','.$location_y.','.$field['page'].');" onblur="hideFieldLocator('.$field['page'].');" onKeyDown="javascript:limitText(this.form.f'.$field['id'].','.$field['character_limit'].',null)" rows="4" name="f'.$field['id'].'">'.$value.'</textarea><br />';
+			echo '<textarea onfocus="showFieldLocator('.$location_x.','.$location_y.','.$field['page'].','.$scale.');" onblur="hideFieldLocator('.$field['page'].');" onKeyDown="javascript:limitText(this.form.f'.$field['id'].','.$field['character_limit'].',null)" rows="4" name="f'.$field['id'].'">'.$value.'</textarea><br />';
 
 		}
 		echo '</p>';

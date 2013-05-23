@@ -4,13 +4,10 @@ function limitText(limitField, limitNum, countdownID) {
 	} 
 }
 
-function showFieldLocator(xloc, yloc, page) {
+function showFieldLocator(xloc, yloc, page, scale) {
   previewPage = document.getElementById('previewPage'+page);
   fieldLocator = document.getElementById('fieldLocator'+page);
-  
-  // Need to work out scale per page (Currently assumes A4 portrait for testing)
-  scale = previewPage.width/210;
-  
+    
   fieldLocatorStyle = window.getComputedStyle(fieldLocator);
   fieldLocatorWidth = fieldLocatorStyle.width.substring(0,fieldLocatorStyle.width.length-2)/2;
   fieldLocatorHeight = fieldLocatorStyle.height.substring(0,fieldLocatorStyle.height.length-2)/2;
