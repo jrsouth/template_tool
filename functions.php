@@ -306,7 +306,7 @@ function get_fields($template_id, $pageno = 0) {
 	}
 
 	// Get base parents (i.e. no parent of their own) and drop into an array
-	$sql = 'SELECT * FROM `fields` WHERE `template_id` = '. $template_id . $page_restriction . ' AND `parent` = 0 ORDER BY `page`, `y_position`';
+	$sql = 'SELECT * FROM `fields` WHERE `template_id` = '. $template_id . $page_restriction . ' AND `parent` = 0 ORDER BY `page`, `y_position`, `name`';
 	$results = mysql_query($sql);
 	$fields = array();
 	while ($field = mysql_fetch_assoc($results)) {
