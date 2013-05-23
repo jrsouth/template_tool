@@ -154,7 +154,6 @@ global $default_templates_layout, $default_templates_available;
 function displayCurrentPreview() {
 	global $template, $working_template_id, $preview_size;
 
-
 	$params = '&template_id='.$template['id'];
 
 	$sql = 'SELECT * FROM images WHERE template_id = '. $template['id'];
@@ -176,16 +175,18 @@ function displayCurrentPreview() {
 	}
 
 	if ($working_template_id > 0) {
-		for ($currentpage = 1; $currentpage <= $template['pagecount'] ; $currentpage++) {
-			echo '<img width="'.$preview_size.'" src="tools/createPDF.php?working_template_id='.$working_template_id.'&view=preview&page='.$currentpage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
+		for ($currentPage = 1; $currentPage <= $template['pagecount'] ; $currentPage++) {
+			echo('<img src="images/target-cursor.gif" class="field-locator" id="fieldLocator'.$currentPage.'">');
+			echo '<img id="previewPage'.$currentPage.'" width="'.$preview_size.'" src="tools/createPDF.php?working_template_id='.$working_template_id.'&view=preview&page='.$currentPage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 			echo '<br />';
 		}
 		echo '&#0187; <a href="tools/createPDF.php?working_template_id='.$working_template_id.'">Download PDF now (right-click to save as)</a>';
 		echo '<br />&#0187; <a href="tools/createPDF.php?working_template_id='.$working_template_id.'&view=highres&page=1">Download high-res JPG now (right-click to save as)</a>';
 
 	} else {
-		for ($currentpage = 1; $currentpage <= $template['pagecount'] ; $currentpage++) {
-			echo '<img width="'.$preview_size.'" src="tools/createPDF.php?template_id='.$template['id'].'&view=preview&page='.$currentpage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
+		for ($currentPage = 1; $currentPage <= $template['pagecount'] ; $currentPage++) {
+			echo('<img src="images/target-cursor.gif" class="field-locator" id="fieldLocator'.$currentPage.'">');
+			echo '<img id="previewPage'.$currentPage.'" width="'.$preview_size.'" src="tools/createPDF.php?template_id='.$template['id'].'&view=preview&page='.$currentPage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 			echo '<br />';
 		}
 		echo '&#0187; <a href="tools/createPDF.php?template_id='.$template['id'].'">Download PDF Now (right-click to save as)</a>';
@@ -406,7 +407,7 @@ function displayForm() {
 			$local_imgfile = $_FILES['img'.$image['id']]['upload'];
 		}
 
-		echo '<input type="file" class="file-input" name="img'.$image['id'].'" />';
+		echo '<input type="file" onmouseover="this.focus();" onfocus="showFieldLocator('.($image['x_position'] + 0.5*$image['width']).','.($image['y_position'] + 0.5*$image['height']).','.$image['page'].');" onblur="hideFieldLocator('.$image['page'].');" class="file-input" name="img'.$image['id'].'" />';
 
 		if ($local_imgfile != '') { // Insert hidden form field if there's a value (and print)
 			echo '<input type="hidden" name="'.('img'.$image['id'].'hidden').'" value="'.$local_imgfile.'" />';
@@ -414,24 +415,45 @@ function displayForm() {
 		}
 
 	}
+	
+	$parentLocation_x = 0;
+	$parentLocation_y = 0;
 
 	foreach ($fields as $field) { // display fields in order
 		$value = (isset($_POST['f'.$field['id']])?$_POST['f'.$field['id']]:$field['default_text']);
+
 
 		echo '<p><span class="field-title">'.$field['name'].': </span> ';
 		echo '<span class="field-character-count"> (Up to '.$field['character_limit'].' characters)</span><br />';
 
 		$type = ($field['wrap_width'] > 0 || $field['parent'] > 0)?"multi_line":"single_line";
+		
+		if ($field['parent'] == 0) {
+		  $parentLocation_x = 0;
+		  $parentLocation_y = 0;
+		}
+		
+		$location_x = $parentLocation_x + $field['x_position'];
+		$location_y = $parentLocation_y + $field['y_position'] - ($type=='single_line'?1:-1) * $field['font_size']/5.66929133501;
+		
 		switch ($type) {
 		case 'single_line' :
-			echo '<input type="text" maxlength="'.$field['character_limit'].'" name="f'.$field['id'].'" value="'.$value.'" /><br />';
+			echo '<input type="text" maxlength="'.$field['character_limit'].'" name="f'.$field['id'].'" value="'.$value.'"  onfocus="showFieldLocator('.$location_x.','.$location_y.','.$field['page'].');" onblur="hideFieldLocator('.$field['page'].');"/><br />';
 			break;
 
 		case 'multi_line' :
-			echo '<textarea onKeyDown="javascript:limitText(this.form.f'.$field['id'].','.$field['character_limit'].',null)" rows="4" name="f'.$field['id'].'">'.$value.'</textarea><br />';
+			echo '<textarea onfocus="showFieldLocator('.$location_x.','.$location_y.','.$field['page'].');" onblur="hideFieldLocator('.$field['page'].');" onKeyDown="javascript:limitText(this.form.f'.$field['id'].','.$field['character_limit'].',null)" rows="4" name="f'.$field['id'].'">'.$value.'</textarea><br />';
 
 		}
 		echo '</p>';
+		
+		if ($field['parent'] == 0) {
+		  $parentLocation_x = $field['x_position'];
+		  $parentLocation_y = $field['y_position'];
+		} else {;
+		  $parentLocation_y += $field['y_position'] + $field['leading'] * 2 * 0.352777778;
+		}
+		
 	}
 
 	echo '<input type="submit" name="update_working_template" value="Update the preview" />';
