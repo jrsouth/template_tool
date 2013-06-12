@@ -144,6 +144,7 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 
 
 		foreach ($fields as $field) {
+		if ($field['type'] != 'data') {
 
 			// Get font details
 			$sql = 'SELECT * FROM `fonts` WHERE `id` = ' . $field['font_id'];
@@ -166,6 +167,37 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 			// Replace with text provided if available
 			if (isset($working_template['f'.$field['id']])) {
 				$content = $working_template['f'.$field['id']];
+			}
+			
+			if ($field['type'] == 'wrapper') {
+			// insert content from data fields into wrapper fields
+			// Pretty HACK-y at the moment...
+			      
+			      $sections = explode('{', $content);
+			      $content = '';
+			      foreach ($sections as $sectionNum => $section) {
+				  if ($sectionNum > 0) {
+					$parts = explode('}', $section);
+					
+					// Set default data HACK
+					foreach ($fields as $searchField) {
+					    if ($searchField['id'] == $parts[0]) {
+						$data = $searchField['default_text'];
+					    }
+					}
+
+					// Replace with data provided if available
+					if (isset($working_template['f'.$parts[0]])) {
+						$data = $working_template['f'.$parts[0]];
+					}
+					
+					$content .= $data . $parts[1];
+				  } else {
+					$content .= $section;
+				  }
+			      }
+			      
+			    
 			}
 			
 			// Change encoding (FPDF doesn't handle UTF-8)
@@ -202,7 +234,7 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 				$pdf->Text($field['x_position'], $field['y_position'], $content);
 			}
 		}
-
+	} // end skipping of display for fields of 'data' type (i.e. inserted into other 'wrapper' text)
 	}
 
 } else { // Generate error PDF

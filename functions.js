@@ -1,3 +1,6 @@
+var loadTime = Date.now();
+
+
 function limitText(limitField, limitNum, countdownID) {
 	if (limitField.value.length > limitNum) {
 		limitField.value = limitField.value.substring(0, limitNum);
@@ -20,4 +23,10 @@ function showFieldLocator(xloc, yloc, page, scale) {
 function hideFieldLocator(page) {
   fieldLocator = document.getElementById('fieldLocator'+page);
   fieldLocator.style.display = "none";
+}
+
+function rotateElement(element) {
+ rotate = setInterval(function(){
+ element.style['-webkit-transform']='rotate('+ (Date.now() - loadTime)/15 +'deg)';
+ },25);
 }

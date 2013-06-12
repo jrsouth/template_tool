@@ -176,7 +176,7 @@ function displayCurrentPreview() {
 
 	if ($working_template_id > 0) {
 		for ($currentPage = 1; $currentPage <= $template['pagecount'] ; $currentPage++) {
-			echo('<img src="images/target-cursor.gif" class="field-locator" id="fieldLocator'.$currentPage.'">');
+			echo('<img src="images/cursor.png" class="field-locator" id="fieldLocator'.$currentPage.'">');
 			echo '<img id="previewPage'.$currentPage.'" width="'.$preview_size.'" src="tools/createPDF.php?working_template_id='.$working_template_id.'&view=preview&page='.$currentPage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 			echo '<br />';
 		}
@@ -185,7 +185,7 @@ function displayCurrentPreview() {
 
 	} else {
 		for ($currentPage = 1; $currentPage <= $template['pagecount'] ; $currentPage++) {
-			echo('<img src="images/target-cursor.gif" class="field-locator" id="fieldLocator'.$currentPage.'">');
+			echo('<img src="images/cursor.png" class="field-locator" id="fieldLocator'.$currentPage.'" onload="rotateElement(this);">');
 			echo '<img id="previewPage'.$currentPage.'" width="'.$preview_size.'" src="tools/createPDF.php?template_id='.$template['id'].'&view=preview&page='.$currentPage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 			echo '<br />';
 		}
@@ -421,6 +421,9 @@ function displayForm() {
 	$parentLocation_y = 0;
 
 	foreach ($fields as $field) { // display fields in order
+    
+	    if ($field['type'] != 'wrapper') { // Don't display 'wrapper' fields
+	
 		$value = (isset($_POST['f'.$field['id']])?$_POST['f'.$field['id']]:$field['default_text']);
 
 
@@ -439,7 +442,7 @@ function displayForm() {
 		
 		switch ($type) {
 		case 'single_line' :
-			echo '<input type="text" maxlength="'.$field['character_limit'].'" name="f'.$field['id'].'" value="'.$value.'"  onfocus="showFieldLocator('.$location_x.','.$location_y.','.$field['page'].','.$scale.');" onblur="hideFieldLocator('.$field['page'].');"/><br />';
+			echo '<input type="text" maxlength="'.$field['character_limit'].'" name="f'.$field['id'].'" value="'.$value.'"  onfocus="'. (($field['type'] != 'data')?'showFieldLocator('.$location_x.','.$location_y.','.$field['page'].','.$scale.');':'hideFieldLocator('.$field['page'].');') .  '" onblur="hideFieldLocator('.$field['page'].');"/><br />';
 			break;
 
 		case 'multi_line' :
@@ -454,6 +457,8 @@ function displayForm() {
 		} else {;
 		  $parentLocation_y += $field['y_position'] + $field['leading'] * 2 * 0.352777778;
 		}
+	    
+	    }
 		
 	}
 
