@@ -111,6 +111,8 @@ img.thumb, img.preview {
 
 img.thumb {
 	margin: 5px auto;
+	max-width: 150px;
+	max-height: 150px;
 }
 
 img.preview {

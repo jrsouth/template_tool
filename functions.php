@@ -256,7 +256,7 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 	if ($view == 'preview') {
 		$xsize = $preview_size;
 		$ysize = 2000;
-		$resolution = 150;
+		$resolution = 100;
 	} else if ($view == 'highres') {
 		$xsize = $highres_size;
 		$ysize = $highres_size;
@@ -264,11 +264,11 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 	} else {
 		$xsize = $thumbnail_size;
 		$ysize = $thumbnail_size;
-		$resolution = 20;
+		$resolution = 100;
 	}
 
 	
-	$gsCommand = 'gs -dSAFER -dBATCH -sDEVICE=jpeg -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r' . $resolution . ' -sOutputFile='. $pdffile . '.jpg ' . $pdffile;
+	$gsCommand = 'gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=jpeg -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r' . $resolution . ' -sOutputFile='. $pdffile . '.jpg ' . $pdffile;
    exec($gsCommand);
 
 	$im = new Imagick($pdffile . '.jpg');
@@ -283,7 +283,7 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 	echo $im;
 	$im->destroy();
 
-
+	unlink($pdffile . '.jpg');
 
 
 	/* // Imagemagick Solution
