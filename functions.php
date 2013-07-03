@@ -248,6 +248,7 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 	// $view is the type of view (thumbnail/preview)
 	// $templateID is the base template's ID - only used for saving previews
 	// $page is the page number to generate the preview for
+	// DisplayPDF is used for outputting images of single-page PDFs
 
 	$thumbnail_location = $cache_path . 'thumbnails/template_'.$templateID.'.jpg';
 	$preview_location = $cache_path . 'default/template_'.$templateID.'_p' . $page . '.jpg';
@@ -266,8 +267,26 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 		$resolution = 20;
 	}
 
-	$pdffile .= '[0]'; // DisplayPDF is used for outputing images of single-page PDFs // '.($page-1).']';
+	
+	$gsCommand = 'gs -dSAFER -dBATCH -sDEVICE=jpeg -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r' . $resolution . ' -sOutputFile='. $pdffile . '.jpg ' . $pdffile;
+   exec($gsCommand);
 
+	$im = new Imagick($pdffile . '.jpg');
+	
+	if ($view == 'thumbnail') {
+		$im->writeImage($thumbnail_location);
+	} else if ($view == 'preview' && isset($_GET['reset']) && $_GET['reset'] == 1) {
+			$im->writeImage($preview_location);
+		}
+	
+	header( "Content-Type: image/jpeg" );
+	echo $im;
+	$im->destroy();
+
+
+
+
+	/* // Imagemagick Solution
 	$im = new imagick();
 	$im->setResolution($resolution, $resolution);
 	$im->readImage($pdffile);
@@ -276,18 +295,7 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 	$im->setCompressionQuality(90);
 	$im->setImageFormat("jpeg");
 	$im->thumbnailImage($xsize, $ysize, true);
-
-	if ($view == 'thumbnail') {
-		$im->writeImage($thumbnail_location);
-	} else if ($view == 'preview' && isset($_GET['reset']) && $_GET['reset'] == 1) {
-			$im->writeImage($preview_location);
-		}
-
-
-	header( "Content-Type: image/jpeg" );
-	echo $im;
-
-	$im->destroy();
+	*/
 }
 
 
