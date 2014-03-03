@@ -6,7 +6,6 @@
  * @package template_tool
  */
 
-
 $debug = true;
 
 $thumbnail_size = 150; // Size in px (square bounding box)
@@ -27,4 +26,3 @@ $default_templates_available = 'active';
 
 require('settings.php');
 
-?>

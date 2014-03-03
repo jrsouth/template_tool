@@ -267,23 +267,26 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 		$resolution = 100;
 	}
 
-	
+
 	$gsCommand = 'gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=jpeg -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r' . $resolution . ' -sOutputFile='. $pdffile . '.jpg ' . $pdffile;
-   exec($gsCommand);
+	exec($gsCommand);
 
 	$im = new Imagick($pdffile . '.jpg');
-	
+
+
 	if ($view == 'thumbnail') {
 		$im->writeImage($thumbnail_location);
 	} else if ($view == 'preview' && isset($_GET['reset']) && $_GET['reset'] == 1) {
-			$im->writeImage($preview_location);
-		}
-	
+		$im->writeImage($preview_location);
+	}
+
+
 	header( "Content-Type: image/jpeg" );
 	echo $im;
 	$im->destroy();
 
 	unlink($pdffile . '.jpg');
+
 
 
 	/* // Imagemagick Solution

@@ -5,11 +5,9 @@
  * @package default
  */
 
-
 // Set up environment
 require '../functions.php';
 require '../process.php';
-
 
 $thumbnail_location = $cache_path . 'thumbnails/template_'.$template['id'].'.jpg';
 $preview_location = $cache_path . 'default/template_'.$template['id'].'_p' . (isset($_GET['page'])?$_GET['page']:'1') . '.jpg';
@@ -21,10 +19,11 @@ if (isset($_GET['view']) && $_GET['view'] == 'thumbnail' && file_exists($thumbna
 	imagejpeg(imagecreatefromjpeg($thumbnail_location));
 	exit();
 } else if (isset($_GET['reset']) && isset($_GET['view']) && $_GET['view'] == 'preview' && file_exists($preview_location)) {
-		header("Content-type: image/jpeg");
-		imagejpeg(imagecreatefromjpeg($preview_location));
-		exit();
-	}
+	header("Content-type: image/jpeg");
+	imagejpeg(imagecreatefromjpeg($preview_location));
+	exit();
+}
+
 
 $working_template = array();
 
@@ -256,7 +255,7 @@ if (isset($_GET['view'])) {  // Output a JPEG preview/thumbnail
 
 	$pdffile = $cache_path . 'pdf/'.uniqid('LLR').'.pdf';
 
-	$handle = fopen($pdffile, 'c');
+	$handle = fopen($pdffile, 'cb');
 	fwrite($handle, $pdf->Output('LLR.pdf', 'S'));
 	fclose($handle);
 	displayPDF($pdffile, $_GET['view'], $template['id'], (isset($_GET['page'])?$_GET['page']:'1'));
@@ -264,5 +263,3 @@ if (isset($_GET['view'])) {  // Output a JPEG preview/thumbnail
 } else { // Let the browser handle the PDF
 	$pdf->Output('LLR.pdf', 'I');
 }
-
-?>
