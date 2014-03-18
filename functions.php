@@ -256,7 +256,7 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 	if ($view == 'preview') {
 		$xsize = $preview_size;
 		$ysize = 2000;
-		$resolution = 100;
+		$resolution = 600;
 	} else if ($view == 'highres') {
 		$xsize = $highres_size;
 		$ysize = $highres_size;
@@ -273,6 +273,9 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 
 	$im = new Imagick($pdffile . '.jpg');
 
+	// Resize to correct dimensions
+	$im->resizeImage ($xsize, $ysize, Imagick::FILTER_LANCZOS, 1, true);
+//XXX	$im->scaleImage ($xsize, $ysize, true);
 
 	if ($view == 'thumbnail') {
 		$im->writeImage($thumbnail_location);

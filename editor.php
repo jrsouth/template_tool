@@ -36,7 +36,7 @@ echo '<?xml version="1.0" encoding="utf-8" ?>';
 
 <?php // Put restart link in if template already selected
 if (isset($template)) {
-    echo '<a href="'.$_SERVER['PHP_SELF'].'">&lt;&lt; Back to template selection</a>';
+    echo '<br style="clear:both;"/><a href="'.$_SERVER['PHP_SELF'].'">&lt;&lt; Back to template selection</a>';
 }
 ?>
 
@@ -46,6 +46,95 @@ if (isset($template)) {
 <?php
 
 if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
+
+
+
+    if (isset($_GET['action']) && $_GET['action'] == 'duplicate') {
+
+	// Duplicate existing template
+	//
+	// Needs error checking/confirmation of success. 
+	// Maybe give option for new name as part of process instead of appending "(copy)"?
+
+	// Get current template setting
+    	$template = getTemplate($_POST['template_id']);
+
+	// Get current template fields
+	$fields = getTemplateFields($_POST['template_id']);
+
+	// Get current template images
+	$images = getTemplateImages($_POST['template_id']);
+
+
+	// Create new template: "Template Name (copy)"
+
+	$sql = 'INSERT INTO `templates` VALUES (
+		NULL,
+		"' . $template['name'] . ' (copy)",
+		"' . $template['pdf_file'] . '",
+		"' . $template['permissions'] . '",
+		' . $template['bleed'] . ',
+		"' . $template['owner'] . '",
+		' . $template['active'] . ',
+		' . $template['pagecount'] . ',
+		' . $template['height'] . ',
+		' . $template['width'] . '
+		)'; 
+	mysql_query($sql);
+	$new_template_id = mysql_insert_id();
+
+
+        // Add fields to new template
+
+	foreach ($fields as $field) {
+
+	$sql = 'INSERT INTO `fields` VALUES (
+		NULL,
+		' . $new_template_id . ',
+		"' . $field['type'] . '",
+		"' . $field['name'] . '",
+		"' . $field['default_text'] . '",
+		' . $field['force_uppercase'] . ',
+		' . $field['character_limit'] . ',
+		' . $field['font_id'] . ',
+		' . $field['font_size'] . ',
+		' . $field['colour_id'] . ',
+		' . $field['x_position'] . ',
+		' . $field['y_position'] . ',
+		' . $field['wrap_width'] . ',
+		' . $field['leading'] . ',
+		' . $field['parent'] . ',
+		' . $field['page'] . '
+		)';
+
+	mysql_query($sql);
+
+	}
+
+        // Add images to new template
+
+	foreach ($images as $image) {
+
+	$sql = 'INSERT INTO `images` VALUES (
+		NULL,
+		' . $new_template_id . ',
+		"' . $image['name'] . '",
+		' . $image['x_position'] . ',
+		' . $image['y_position'] . ',
+		' . $image['width'] . ',
+		' . $image['height'] . ',
+		"' . $image['alignment'] . '",
+		' . $image['page'] . '
+		)';
+
+	mysql_query($sql);
+
+	}
+
+	// Make the page display the new template rather than the current one
+	$_POST['template_id'] = $new_template_id;
+
+    }
 
 
     if (isset($_GET['remove'])) { // Removing a field
@@ -81,6 +170,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
     $colours = getAllColours();
     $fonts = getAllFonts();
     $fields = getTemplateFields($_POST['template_id']);
+    $images = getTemplateImages($_POST['template_id']);
     $template = getTemplate($_POST['template_id']);
 
 
@@ -151,6 +241,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
     echo '<div style="float:left;"><img class="thumb" src="tools/createPDF.php?view=thumbnail&template_id='.$template['id'].'" /></div>';
     echo '<div style="float:left;padding-left:10px"><h2 style="border:0;">'.$template['name'].'<br /><sub>(template #'.$template['id'].')</sub></h2></div>';
+    echo '<div style="float:right;padding-right:10px;padding-top:10px"><a style="color:#aaaaaa;" href="'.$_SERVER['PHP_SELF'].'?action=duplicate&template_id='.$template['id'].'"><img src="images/duplicate.png" style="height:2em;" /></a></div>';
     echo '<hr />';
 
 
@@ -162,6 +253,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
     echo '<div class="top-tab" style="background-color: #666666; color: #FFFFFF;" onclick="hideAllBut(\'section-parent\', \'section-new-field\');makeInverted(this);">New field</div>';
     echo '<div class="top-tab" onclick="hideAllBut(\'section-parent\', \'section-edit-fields\');makeInverted(this);">Edit fields</div>';
+    echo '<div class="top-tab" onclick="hideAllBut(\'section-parent\', \'section-edit-images\');makeInverted(this);">Edit images</div>';
     echo '<div class="top-tab" onclick="hideAllBut(\'section-parent\', \'section-edit-template\');makeInverted(this);">Edit template</div>';
     echo '<br class="clear" />';
 
@@ -251,6 +343,34 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
 
     echo '</div>'; // end edit fields section
+
+
+
+    // ----------------- EDIT IMAGES ---------------------------------------------
+
+    echo '<div id="section-edit-images" style="display: none;">';
+
+    echo '<form action="'.$_SERVER['PHP_SELF'].'" method="POST">';
+
+    echo '<input type="hidden" name="template_id" value="'.$_POST['template_id'].'" />';
+
+    echo '<input class="button" type="submit" name="savefield" value="Save Changes" />';
+
+    echo '<table class="editor">';
+
+    foreach ($images as $image) {
+        displayImageEditor($image);
+    }
+
+    echo '</table>';
+
+    echo '<br /><input class="button" type="submit" name="savefield" value="Save Changes" />';
+
+    echo '</form>';
+
+
+    echo '</div>'; // end edit fields section
+
 
 
 

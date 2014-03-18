@@ -420,6 +420,113 @@ function displayFieldEditor($field) {
 /**
  *
  *
+ * @param unknown $field
+ */
+function displayImageEditor($image) {
+	global $fonts, $colours, $template, $fields;
+
+echo('<p>COMING SOON!</p>');
+
+/*
+	if ($field['id'] == 'new') {
+		echo '<tr class="header"><td colspan="2">New field</td></tr>';
+	} else {
+		echo '<tr class="header"><td colspan="2">'.$field['name'].' <a style="color:#990000;font-size:.5em;" href="editor.php?template_id='.$field['template_id'].'&remove='.$field['id'].'">[delete]</a></td></tr>';
+	}
+
+	echo '<tr>';
+
+
+	echo '<td id="field'.$field['id'].'menu" class="field-menu">';
+	echo '<span id="field'.$field['id'].'menu-basic" style="font-weight:bold;" class="fake-link"
+  onclick="hideAllBut(\'field'.$field['id'].'main\', \'field'.$field['id'].'basic\');makeBold(this);">Basic information</span><hr />';
+	echo '<span id="field'.$field['id'].'menu-pos" class="fake-link"
+  onclick="hideAllBut(\'field'.$field['id'].'main\', \'field'.$field['id'].'pos\');makeBold(this);">Positioning</span><hr />';
+	echo '<span id="field'.$field['id'].'menu-font" class="fake-link"
+  onclick="hideAllBut(\'field'.$field['id'].'main\', \'field'.$field['id'].'font\');makeBold(this);">Font</span><hr />';
+	echo '</td>';
+
+
+	echo '<td>';
+	echo '<div id="field'.$field['id'].'main">';
+
+
+	echo '<div id="field'.$field['id'].'basic">';
+
+	echo 'Field Name:<br /><input type="text" name="field-'.$field['id'].'-name" value="'.$field['name'].'" /></br />';
+
+
+	echo 'Default Text:<br /><textarea rows="4" name="field-'.$field['id'].'-default_text">'.$field['default_text'].'</textarea><br />';
+
+
+	echo 'Character limit:<br /><input type="text" name="field-'.$field['id'].'-character_limit" value="'.$field['character_limit'].'" /><br />';
+
+	// PARENT SELECTOR
+	echo 'Parent: <select name="field-'.$field['id'].'-parent">';
+	echo '<option value="0"'.($field['parent']==0?' selected="selected"':'').'>No parent</option>';
+	foreach ($fields as $f) {
+		if ($f['id'] != $field['id']) {
+			echo '<option value="'.$f['id'].'"'.($field['parent']==$f['id']?' selected="selected"':'').'>'.$f['name'].'</option>';
+		}
+	}
+	echo '</select> ';
+
+	// PAGE SELECTOR
+	echo 'Page: <select name="field-'.$field['id'].'-page">';
+	for ($i = 1; $i <= $template['pagecount']; $i++) {
+		echo '<option value="'.$i.'"'.($field['page']==$i?' selected="selected"':'').'>Page '.$i.'</option>';
+	}
+	echo '</select><br />';
+
+	echo '</div>';
+
+
+
+	echo '<div id="field'.$field['id'].'pos" style="display:none;">';
+
+	echo 'X-pos (mm): <input class="short" type="text" name="field-'.$field['id'].'-x_position" value="'.$field['x_position'].'" /><br />';
+	echo 'Y-pos (mm): <input class="short" type="text" name="field-'.$field['id'].'-y_position" value="'.$field['y_position'].'" /><br />';
+
+	echo 'Wrap width (if applicable):<br /><input class="short" type="text" name="field-'.$field['id'].'-wrap_width" value="'.$field['wrap_width'].'" /><br />';
+
+
+	echo '</div>';
+
+
+
+	echo '<div id="field'.$field['id'].'font" style="display:none;">';
+
+	echo 'Font size:<br /><input class="short" type="text" name="field-'.$field['id'].'-font_size" value="'.$field['font_size'].'" /><br />';
+
+	echo 'Leading:<br /><input class="short" type="text" name="field-'.$field['id'].'-leading" value="'.$field['leading'].'" /><br />';
+	// FONT SELECTOR
+	echo 'Font: <select name="field-'.$field['id'].'-font_id">';
+	foreach ($fonts as $font) {
+		echo '<option value="'.$font['id'].'"'.($field['font_id']==$font['id']?' selected="selected"':'').'>'.$font['display_name'].'</option>';
+	}
+	echo '</select> ';
+
+	// COLOUR SELECTOR
+	echo 'Colour: <select name="field-'.$field['id'].'-colour_id">';
+	foreach ($colours as $colour) {
+		echo '<option value="'.$colour['id'].'"'.($field['colour_id']==$colour['id']?' selected="selected"':'').'>'.$colour['name'].'</option>';
+	}
+	echo '</select><br />';
+
+	echo '<input type="checkbox" name="field-'.$field['id'].'-force_uppercase"'.($field['force_uppercase']>0?' checked="checked"':'').' /> Force Uppercase?<br />';
+
+	echo '</div>';
+
+
+	echo '</div>';
+	echo '</tr>';
+*/
+}
+
+
+/**
+ *
+ *
  * @return unknown
  */
 function getAllTemplates() {
@@ -520,6 +627,24 @@ function getTemplateFields($template_id) {
 		$fields[] = $result;
 	}
 	return $fields;
+}
+
+
+/**
+ *
+ *
+ * @param unknown $template_id
+ * @return unknown
+ */
+function getTemplateImages($template_id) {
+	global $db_connection;
+	$sql = 'SELECT * FROM `images` WHERE `template_id` = '.$template_id.' ORDER BY `name`';
+	$results = mysql_query($sql);
+	$images = array();
+	while ($result = mysql_fetch_array($results)) {
+		$images[] = $result;
+	}
+	return $images;
 }
 
 
