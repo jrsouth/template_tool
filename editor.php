@@ -7,8 +7,8 @@
  */
 
 // Require authentication (super simple and not particularly secure)
-require('settings-default.php');
-if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] != $edit_username || $_SERVER['PHP_AUTH_PW'] != $edit_password) {
+require('settings-core.php');
+if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] != $editor_username || $_SERVER['PHP_AUTH_PW'] != $editor_password) {
     header('WWW-Authenticate: Basic realm="Template Editor"');
     header('HTTP/1.0 401 Unauthorized');
     echo('You must be authorised to access this page.');

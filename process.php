@@ -9,7 +9,7 @@
  * @see main.php
  */
 
-require 'settings-default.php';
+require 'settings-core.php';
 
 // Create database connection
 $db_connection = mysql_connect($db_server, $db_user, $db_password) or die(mysql_error());
