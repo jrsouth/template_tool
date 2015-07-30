@@ -41,7 +41,7 @@ function displayProgressBar($step) {
 	$stages = array();
 	$stages[] = array('Select a template', 'index.php?step=1');
 	$stages[] = array('Customise it', '');
-	$stages[] = array('Finish up', '');
+	//$stages[] = array('Finish up', '');
 	//$stages[] = Array('Complete', '');
 
 	// Display code
@@ -81,6 +81,9 @@ global $default_templates_layout, $default_templates_available;
 
 	$layouts = Array('grid', 'list');
 	$access_levels = Array('active', 'all');
+	$tags = getAllTags();
+	$tags_active = getActiveTags();
+	$tags_active_string = getListOfTags($tags_active);
 
 	$templates_layout = $default_templates_layout;
 	if (isset($_GET['templates_layout']) && array_search($_GET['templates_layout'], $layouts) !== false) {
@@ -93,41 +96,85 @@ global $default_templates_layout, $default_templates_available;
 	}
 
 
-	// Display heading
-	echo('<p class="inline-selector">Display [ ');
+	// Display options heading
+	echo('<p class="inline-selector">');
+
+	echo('Display as [ ');
 	foreach ($layouts as $key => $layout) {
 	    if ($layout == $templates_layout) {
 		echo('<strong>' . $layout . '</strong> ');
 	    } else {
-		echo('<a href="'.$_SERVER['PHP_SELF'].'?step=1&templates_layout='.$layout.'&templates_available='.$templates_available.'" title="Display templates as '.$layout.'">'.$layout.'</a> ');
+		echo('<a href="'.$_SERVER['PHP_SELF'].'?step=1&tags='.$tags_active_string.'&templates_layout='.$layout.'&templates_available='.$templates_available.'" title="Display templates as '.$layout.'">'.$layout.'</a> ');
 	    }
 	    if ($key+1 < count($layouts)) {
 		echo('&#124; ');
 	    }
 	}
-	echo(' ] &nbsp;&nbsp;&nbsp;&nbsp; Filter [ ');
+
+	echo(' ]');
+
+/*
+	echo('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+	echo(' Access [ ');
 	foreach ($access_levels as $key => $access_level) {
 	    if ($access_level == $templates_available) {
 		echo('<strong>' . $access_level . '</strong> ');
 	    } else {
-		echo('<a href="'.$_SERVER['PHP_SELF'].'?step=1&templates_layout='.$templates_layout.'&templates_available='.$access_level.'" title="Display '.$access_level.' templates">'.$access_level.'</a> ');
+		echo('<a href="'.$_SERVER['PHP_SELF'].'?step=1&tags='.$tags_active_string.'&templates_layout='.$templates_layout.'&templates_available='.$access_level.'" title="Display '.$access_level.' templates">'.$access_level.'</a> ');
 	    }
 	    if ($key+1 < count($access_levels)) {
 		echo('&#124; ');
 	    }
 	}
-	echo(']</p>');
+	echo(' ]');
+*/
+
+	echo('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+	echo(' Filter by [ ');
+	foreach ($tags as $key => $tag) {
+	    if (array_search($tag, $tags_active) !== false) {
+		$tags_new_string = getListOfTags($tags_active, $tag);
+		echo('<strong><a href="'.$_SERVER['PHP_SELF'].'?step=1&tags='.$tags_new_string.'&templates_layout='.$templates_layout.'&templates_available='.$templates_available.'" title="Hide &quot;'.$tag.'&quot; templates">'.$tag.'</a></strong> ');
+	    } else {
+		$tags_new_string = getListOfTags($tags_active) . '+' . $tag;
+		echo('<a href="'.$_SERVER['PHP_SELF'].'?step=1&tags='.$tags_new_string.'&templates_layout='.$templates_layout.'&templates_available='.$templates_available.'" title="Display &quot;'.$tag.'&quot; templates">'.$tag.'</a> ');
+	    }
+	    if ($key+1 < count($tags)) {
+		echo('&#124; ');
+	    }
+	}
+	echo(' ]');
+
+	if (count($tags_active) > 0) {
+		echo(' <a class="action-link" href="'.$_SERVER['PHP_SELF'].'?step=1&templates_layout='.$templates_layout.'&templates_available='.$templates_available.'" title="Hide &quot;'.$tag.'&quot; templates"> clear filters</a>');
+	}
+
+
+	echo('</p>');
 
 
 	echo('<hr />');
 
 
 	// HACK Need better SQL generation
-	$sql = 'SELECT * FROM `templates`'.($templates_available == 'active'?' WHERE `active` = 1':'').' ORDER BY `name`';
+
+	// Generate default, always-true, "WHERE" SQL
+	$where_clause = '1=1';
+	// active?	
+	$where_clause .= ($templates_available == 'active'?' AND `active` = 1':'');
+	// tags
+	$tags_clause = '';
+	foreach ($tags_active as $key => $tag) {
+		$tags_clause .= '`tags` LIKE "%' . $tag . '%"' . ($key+1 < count($tags_active)?' AND ':'');
+	}
+	if (count($tags_active) > 0) {
+		$where_clause .= ' AND ( ' . $tags_clause . ' )';
+	}
+	$sql = 'SELECT * FROM `templates` WHERE '. $where_clause .' ORDER BY `name`';
 
 	$results = mysql_query($sql);
 
-	if ($results) {
+	if (mysql_num_rows($results)) {
 	    echo('<div class="template-display-'.$templates_layout.'">');
 	    $odd_row = true;
 	    while ($template = mysql_fetch_assoc($results)) {
@@ -142,7 +189,12 @@ global $default_templates_layout, $default_templates_available;
 		}
 	    echo('</div>');
 	} else { // No results
-		echo '<p style="color:#cc0000;"><em>No templates found</em></p>';
+		echo('<p style="padding:2em 1em 0 1em;"><em>No matching templates found.');
+		if (count($tags_active) > 0) {
+			echo(' (<a class="action-link" href="'.$_SERVER['PHP_SELF'].'?step=1&templates_layout='.$templates_layout.'&templates_available='.$templates_available.'" title="Hide &quot;'.$tag.'&quot; templates">Try clearing the filters</a>.)');
+		}
+		echo('</em></p>');
+
 	}
 
 }
@@ -180,8 +232,6 @@ function displayCurrentPreview() {
 			echo '<img id="previewPage'.$currentPage.'" width="'.$preview_size.'" src="tools/createPDF.php?working_template_id='.$working_template_id.'&view=preview&page='.$currentPage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 			echo '<br />';
 		}
-		echo '&#0187; <a href="tools/createPDF.php?working_template_id='.$working_template_id.'">Download PDF now (right-click to save as)</a>';
-		echo '<br />&#0187; <a href="tools/createPDF.php?working_template_id='.$working_template_id.'&view=highres&page=1">Download high-res JPG now (right-click to save as)</a>';
 
 	} else {
 		for ($currentPage = 1; $currentPage <= $template['pagecount'] ; $currentPage++) {
@@ -189,7 +239,6 @@ function displayCurrentPreview() {
 			echo '<img id="previewPage'.$currentPage.'" width="'.$preview_size.'" src="tools/createPDF.php?template_id='.$template['id'].'&view=preview&page='.$currentPage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 			echo '<br />';
 		}
-		echo '&#0187; <a href="tools/createPDF.php?template_id='.$template['id'].'">Download PDF Now (right-click to save as)</a>';
 	}
 
 }
@@ -198,7 +247,7 @@ function displayCurrentPreview() {
 /**
  *
  */
-function updateWorkingTemplateData() {
+function processTemplatePOSTData() {
 	global $template, $image_locations, $working_template_id;
 
 	$params = '&template_id='.$template['id'];
@@ -220,6 +269,12 @@ function updateWorkingTemplateData() {
 		}
 	}
 
+	return $params;
+}
+
+
+function updateWorkingTemplateData($params) {
+	global $template, $working_template_id;
 
 	// Database storage rather than URL query string
 	if ($working_template_id > 0) {
@@ -250,8 +305,8 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 	// $page is the page number to generate the preview for
 	// DisplayPDF is used for outputting images of single-page PDFs
 
-	$thumbnail_location = $cache_path . 'thumbnails/template_'.$templateID.'.jpg';
-	$preview_location = $cache_path . 'default/template_'.$templateID.'_p' . $page . '.jpg';
+	$thumbnail_location = $cache_path . 'thumbnails/template_'.$templateID.'.png';
+	$preview_location = $cache_path . 'default/template_'.$templateID.'_p' . $page . '.png';
 
 	if ($view == 'preview') {
 		$xsize = $preview_size;
@@ -268,10 +323,10 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 	}
 
 
-	$gsCommand = 'gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=jpeg -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r' . $resolution . ' -sOutputFile='. $pdffile . '.jpg ' . $pdffile;
+	$gsCommand = 'gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=png16m -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r' . $resolution . ' -sOutputFile='. $pdffile . '.png ' . $pdffile;
 	exec($gsCommand);
 
-	$im = new Imagick($pdffile . '.jpg');
+	$im = new Imagick($pdffile . '.png');
 
 	// Resize to correct dimensions
 	$im->resizeImage ($xsize, $ysize, Imagick::FILTER_LANCZOS, 1, true);
@@ -283,12 +338,24 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 		$im->writeImage($preview_location);
 	}
 
+        if (isset($_GET['download']) && $_GET['download'] == 1) { 
+                header("Pragma: public");
+                header("Expires: 0");
+                header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+                header("Cache-Control: public");
+                header("Content-Description: File Transfer");
+                header("Content-Type: application/octet-stream");
+                header("Content-Disposition: attachment; filename=\"" . getTemplateName($templateID) . date(' d-m-Y H:i')  . ".png\"");
+                header("Content-Transfer-Encoding: binary");
+        } else {
+		header( "Content-Type: image/png" );
+	}
 
-	header( "Content-Type: image/jpeg" );
+	
 	echo $im;
 	$im->destroy();
 
-	unlink($pdffile . '.jpg');
+	unlink($pdffile . '.png');
 
 
 
@@ -304,6 +371,13 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 	*/
 }
 
+
+function getTemplateName($template_id) {
+	$sql = 'SELECT `name` FROM `templates` WHERE `id` = ' . $template_id;
+	$result = mysql_fetch_assoc(mysql_query($sql));
+echo('Template ID: ' . $template_id . ' || Name = ' . $result['name']);
+	return($result['name']);
+}
 
 /**
  *
@@ -394,6 +468,10 @@ function get_images($template_id, $pageno = 0) {
  */
 function displayForm() {
 	global $template, $working_template_id, $preview_size;
+
+	// Display download box if not a blank template
+	if ($working_template_id > 0) { displayDownloadBox(); };
+
 
 	$images = get_images($template['id']);
 	$fields = get_fields($template['id']);
@@ -588,4 +666,52 @@ function placeImage($pdf, $imgfile, $bbxloc, $bbyloc, $bbwidth, $bbheight, $plac
 }
 
 
-?>
+function displayDownloadBox() {
+	global $working_template_id;
+        echo '<div id="download-box">';
+        echo '<a href="tools/createPDF.php?working_template_id='.$working_template_id.'" target="llrtemplatepreview">View PDF</a>';
+        echo ' | <a href="tools/createPDF.php?working_template_id='.$working_template_id.'&download=1" target="llrtemplatepreview">Download PDF</a>';
+        echo ' <br /><a href="tools/createPDF.php?working_template_id='.$working_template_id.'&view=highres&page=1" target="llrtemplatepreview">View JPG</a>';
+        echo ' | <a href="tools/createPDF.php?working_template_id='.$working_template_id.'&view=highres&page=1&download=1" target="llrtemplatepreview">Download JPG</a>';
+        echo '</div><br />';
+}
+
+
+function getAllTags() {
+        $tags = Array();
+
+        $sql = 'SELECT DISTINCT `tags` FROM `templates` WHERE `tags` != ""'; // DISTINCT limits the redundant work that has to be done later
+        $results = mysql_query($sql);
+
+        // Loop through results and add new terms to the array 
+        while ($template_subset = mysql_fetch_assoc($results)) {
+                $subset = explode(' ', $template_subset['tags']);
+                foreach ($subset as $tag) {
+                        if (array_search($tag, $tags) === false) {
+                                $tags[] = $tag;
+                        }
+                }
+        }
+        natcasesort($tags);
+	$tags = array_values($tags);
+        return($tags);
+}
+
+function getActiveTags() {
+	$tags_active = Array();
+	if (isset($_GET['tags']) && $_GET['tags'] != '') {
+		$tags_active = explode(' ', trim($_GET['tags']));
+	}
+	
+	return($tags_active);
+}
+
+function getListOfTags($tags_array, $tag_to_remove = null) {
+	$tags_string = '';
+	foreach ($tags_array as $tag) {
+		if ($tag != $tag_to_remove && $tag != '') {
+			$tags_string .= '+' . $tag;
+		}
+	}
+	return($tags_string);
+}

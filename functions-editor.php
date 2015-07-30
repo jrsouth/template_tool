@@ -324,7 +324,7 @@ function displayFieldEditor($field) {
 	if ($field['id'] == 'new') {
 		echo '<tr class="header"><td colspan="2">New field</td></tr>';
 	} else {
-		echo '<tr class="header"><td colspan="2">'.$field['name'].' <a style="color:#990000;font-size:.5em;" href="editor.php?template_id='.$field['template_id'].'&remove='.$field['id'].'">[delete]</a></td></tr>';
+		echo '<tr class="header"><td colspan="2">'.$field['name'].' <div style="float:right;font-size:.75em">Field #'.$field['id'].'</div> <a style="color:#990000;font-size:.5em;" href="editor.php?template_id='.$field['template_id'].'&remove='.$field['id'].'">[delete]</a></td></tr>';
 	}
 
 	echo '<tr>';

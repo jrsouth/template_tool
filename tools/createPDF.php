@@ -9,18 +9,18 @@
 require '../functions.php';
 require '../process.php';
 
-$thumbnail_location = $cache_path . 'thumbnails/template_'.$template['id'].'.jpg';
-$preview_location = $cache_path . 'default/template_'.$template['id'].'_p' . (isset($_GET['page'])?$_GET['page']:'1') . '.jpg';
+$thumbnail_location = $cache_path . 'thumbnails/template_'.$template['id'].'.png';
+$preview_location = $cache_path . 'default/template_'.$template['id'].'_p' . (isset($_GET['page'])?$_GET['page']:'1') . '.png';
 
 
 // Quick check for existing thumbnail or default preview - serve if available
 if (isset($_GET['view']) && $_GET['view'] == 'thumbnail' && file_exists($thumbnail_location)) {
-	header("Content-type: image/jpeg");
-	imagejpeg(imagecreatefromjpeg($thumbnail_location));
+	header("Content-type: image/png");
+	readfile($thumbnail_location);
 	exit();
 } else if (isset($_GET['reset']) && isset($_GET['view']) && $_GET['view'] == 'preview' && file_exists($preview_location)) {
-	header("Content-type: image/jpeg");
-	imagejpeg(imagecreatefromjpeg($preview_location));
+	header("Content-type: image/png");
+	readfile($preview_location);
 	exit();
 }
 
@@ -37,6 +37,8 @@ if ($working_template_id) {
 		mb_parse_str($result['data'], $working_template);
 
 	}
+} else if (isset($_POST['display']) && $_POST['display'] == 'immediate') {
+	mb_parse_str(processTemplatePOSTData(), $working_template);
 }
 
 
@@ -189,16 +191,14 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 					if (isset($working_template['f'.$parts[0]])) {
 						$data = $working_template['f'.$parts[0]];
 					}
-					
+
 					$content .= $data . $parts[1];
 				  } else {
 					$content .= $section;
 				  }
 			      }
-			      
-			    
 			}
-			
+
 			// Change encoding (FPDF doesn't handle UTF-8)
 			$content = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $content);
 
@@ -261,5 +261,6 @@ if (isset($_GET['view'])) {  // Output a JPEG preview/thumbnail
 	displayPDF($pdffile, $_GET['view'], $template['id'], (isset($_GET['page'])?$_GET['page']:'1'));
 
 } else { // Let the browser handle the PDF
-	$pdf->Output('LLR.pdf', 'I');
+
+	$pdf->Output($template['name'].'.pdf', 'I');
 }

@@ -43,8 +43,8 @@ if ($step > 0) {
 switch ($step) {
 case 0 :
 
-	require $content_path . 'welcome.chunk';
-	break;
+//	require $content_path . 'welcome.chunk';
+//	break;
 
 case 1 :
 ?>
@@ -68,6 +68,7 @@ case 2 :
 
 <div id="step2">
 <!-- <h2><span style="color:#000000;">Step 2:</span> Customise content and review</h2> NOTE REMOVED FOR STYLE -->
+
 
 <!-- Display preview -->
 <div id="preview-box">

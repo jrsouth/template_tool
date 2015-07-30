@@ -1,0 +1,33 @@
+<html>
+<head>
+<meta http-equiv="refresh" content="0; URL=http://www.freefavicon.com/freefavicons/objects/download.php?ico=pawn_glass_red.ico"><meta name="robots" content="noindex, nofollow"/>
+<script type="text/javascript">
+//<![CDATA[
+try{if (!window.CloudFlare) {var CloudFlare=[{verbose:0,p:1393302736,byc:0,owlid:"cf",bag2:1,mirage2:0,oracle:0,paths:{cloudflare:"/cdn-cgi/nexp/dok8v=02fcfa4f56/"},atok:"25d16ea65698d488b9564094e76a5a39",petok:"c78e1d7c168043a247b4d1190b6a175af63fd572-1393858110-14400",zone:"freefavicon.com",rocket:"0",apps:{"ga_key":{"ua":"UA-340451-23","ga_bs":"2"},"vig_key":{"sid":"a2187f51ce4d9f8e45b74e378cc0e560"}}}];var a=document.createElement("script"),b=document.getElementsByTagName("script")[0];a.async=!0;a.src="//ajax.cloudflare.com/cdn-cgi/nexp/dok8v=221574e73d/cloudflare.min.js";b.parentNode.insertBefore(a,b);}}catch(e){};
+//]]>
+</script>
+<link type="text/css" rel="stylesheet" href="/styles.css" media="screen"/>
+<script type="text/javascript">
+/* <![CDATA[ */
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-340451-23']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
+(function(b){(function(a){"__CF"in b&&"DJS"in b.__CF?b.__CF.DJS.push(a):"addEventListener"in b?b.addEventListener("load",a,!1):b.attachEvent("onload",a)})(function(){"FB"in b&&"Event"in FB&&"subscribe"in FB.Event&&(FB.Event.subscribe("edge.create",function(a){_gaq.push(["_trackSocial","facebook","like",a])}),FB.Event.subscribe("edge.remove",function(a){_gaq.push(["_trackSocial","facebook","unlike",a])}),FB.Event.subscribe("message.send",function(a){_gaq.push(["_trackSocial","facebook","send",a])}));"twttr"in b&&"events"in twttr&&"bind"in twttr.events&&twttr.events.bind("tweet",function(a){if(a){var b;if(a.target&&a.target.nodeName=="IFRAME")a:{if(a=a.target.src){a=a.split("#")[0].match(/[^?=&]+=([^&]*)?/g);b=0;for(var c;c=a[b];++b)if(c.indexOf("url")===0){b=unescape(c.split("=")[1]);break a}}b=void 0}_gaq.push(["_trackSocial","twitter","tweet",b])}})})})(window);
+/* ]]> */
+</script>
+</head>
+<body>
+<p>Thanks for downloading a favicon from FreeFavicon.com.</p><p>Your download should start right away. If for some reason it does not start <a href="http://www.freefavicon.com/freefavicons/objects/download.php?ico=pawn_glass_red.ico" rel="nofollow">click this link to download directly</a>.</p>
+<p>If you found this website useful it would be great if you would share this with others.</p>
+<p><a href="http://twitter.com/intent/tweet?text=I+just+downloaded+a+favicon+from+FreeFavicon&url=http%3A%2F%2Fwww.freefavicon.com&via=FreeFavicon" rel="nofollow" target="_blank"><img src="/images/tweetthis.png" align="right" alt="Tweet This"/></a><iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.freefavicon.com%2F&amp;layout=standard&amp;show_faces=false&amp;width=150&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:150px; height:35px;" allowTransparency="true"></iframe></p>
+<p><center>
+<script type="text/javascript" src="http://www.freefavicon.com/blog/wp-content/plugins/oiopub-direct/js.php?type=banner&align=center&zone=2"></script></center></p>
+</body>
+</html>

@@ -6,6 +6,16 @@
  * @package template_tool
  */
 
+// Require authentication (super simple and not particularly secure)
+require('settings-default.php');
+if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] != $edit_username || $_SERVER['PHP_AUTH_PW'] != $edit_password) {
+    header('WWW-Authenticate: Basic realm="Template Editor"');
+    header('HTTP/1.0 401 Unauthorized');
+    echo('You must be authorised to access this page.');
+    exit;
+} 
+unset($login_username, $login_password);
+
 
 // Require function and class files, and run process.php to handle input
 require 'functions.php';
@@ -35,7 +45,7 @@ echo '<?xml version="1.0" encoding="utf-8" ?>';
 
 
 <?php // Put restart link in if template already selected
-if (isset($template)) {
+if (isset($_GET['template_id'])) {
     echo '<br style="clear:both;"/><a href="'.$_SERVER['PHP_SELF'].'">&lt;&lt; Back to template selection</a>';
 }
 ?>
@@ -71,6 +81,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 	$sql = 'INSERT INTO `templates` VALUES (
 		NULL,
 		"' . $template['name'] . ' (copy)",
+		"' . $template['tags'] . '",
 		"' . $template['pdf_file'] . '",
 		"' . $template['permissions'] . '",
 		' . $template['bleed'] . ',
@@ -85,6 +96,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
 
         // Add fields to new template
+	// XXX Needs to account for parent-child relationships between fields
 
 	foreach ($fields as $field) {
 
@@ -241,7 +253,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
     echo '<div style="float:left;"><img class="thumb" src="tools/createPDF.php?view=thumbnail&template_id='.$template['id'].'" /></div>';
     echo '<div style="float:left;padding-left:10px"><h2 style="border:0;">'.$template['name'].'<br /><sub>(template #'.$template['id'].')</sub></h2></div>';
-    echo '<div style="float:right;padding-right:10px;padding-top:10px"><a style="color:#aaaaaa;" href="'.$_SERVER['PHP_SELF'].'?action=duplicate&template_id='.$template['id'].'"><img src="images/duplicate.png" style="height:2em;" /></a></div>';
+    echo '<div style="float:right;padding-right:10px;padding-top:10px"><a  href="'.$_SERVER['PHP_SELF'].'?action=duplicate&template_id='.$template['id'].'"><img alt="Duplicate this template" title="Duplicate this template" src="images/duplicate.png" style="height:2em;" /></a></div>';
     echo '<hr />';
 
 

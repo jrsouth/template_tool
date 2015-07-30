@@ -5,10 +5,10 @@ echo "'------------------------------'";
 echo " - Removing old files...";
 #rm -rf ./cache/*;
 
-rm -rf ./cache/default/*.jpg
-rm -rf ./cache/img/*.jpg
+rm -rf ./cache/default/*.jpg ./cache/default/*.png
+rm -rf ./cache/img/*.jpg ./cache/img/*.png
 rm -rf ./cache/pdf/*.pdf
-rm -rf ./cache/thumbnails/*.jpg
+rm -rf ./cache/thumbnails/*.jpg ./cache/thumbnails/*.png
 
 
 #echo " - Recreating subfolders...";

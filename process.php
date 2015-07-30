@@ -99,8 +99,9 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 	}
 }
 
+
 if (isset($_POST['update_working_template'])) {
-	updateWorkingTemplateData();
+	updateWorkingTemplateData(processTemplatePOSTData());
 }
 
 

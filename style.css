@@ -143,11 +143,14 @@ div.template-display-grid div p {
 
 div.template-display-list {
 	margin-top: 2em;
+	display: block;
+	position: relative;
 }
 
 div.template-display-list div {
 	clear: both;
 	padding: .2em;
+	height: 30px;
 }
 
 div.template-display-list > div:hover, div.template-display-list > div.odd:hover {
@@ -161,16 +164,17 @@ div.template-display-list div.odd {
 div.template-display-list div p {
 	display: block;
 	position: absolute;
-	left: 120px;
-	width: 20em;
+	left: 5em;
 	text-align: left;
 	margin: .5em 0;
 	font-weight: bold;
 }
 
 div.template-display-list div img {
-	height: 30px;
+	max-height: 100%;
+	max-width: 4em;
 	float: left;
+	margin: 0;
 }
 
 
@@ -247,7 +251,7 @@ span.progressbar-text-first {
 
 #form-box, #preview-box {
 	float: left;
-	margin: 1.5em 3em 1.5em 0;
+	margin: .5em 1em .5em 0;
 }
 #preview-box a {
 	color: #999999;
@@ -258,6 +262,14 @@ span.progressbar-text-first {
 	padding: 10px;
 	box-shadow: 5px 5px 30px rgba(0,0,0,.5);
 }
+#download-box {
+	padding: 10px;
+	background-color: #e2001a;
+	color: #ffffff;
+	margin: .5em 0 .5em 0;
+	box-shadow: 3px 3px 15px rgba(0,0,0,.3);
+	font-weight: 900;
+}
 form p {
   margin: 1em 0;
 }
@@ -266,4 +278,9 @@ width: 50px;
 height: 50px;
 position: absolute;
 display: none;
+}
+
+a.action-link {
+	color: #e20021 !important;
+	font-size: .8em;
 }
