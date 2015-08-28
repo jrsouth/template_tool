@@ -58,7 +58,9 @@ function validateTemplatePostData($id) {
 	if ($PDFUploaded == true) {
 		$template['pdf_file'] = pathinfo($target_path, PATHINFO_BASENAME);
 		$sql .= '`pdf_file` = "'.$template['pdf_file'].'"';
-	} else { $flag++; $msg.='Error with PDF file<br />'; }
+	} else if ($_POST[$prefix.'pdf_file-hidden']) {
+		$sql .= '`pdf_file` = "'.$_POST[$prefix.'pdf_file-hidden'].'"';
+        } else { $flag++; $msg.='Error with PDF file<br />'; }
 
 	if (isset($_POST[$prefix.'name']) && $_POST[$prefix.'name'] != '') {
 		$template['name'] = $_POST[$prefix.'name'];
