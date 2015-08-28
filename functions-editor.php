@@ -55,7 +55,7 @@ function validateTemplatePostData($id) {
 
 	}
 
-	if ($PDFUploaded = true) {
+	if ($PDFUploaded == true) {
 		$template['pdf_file'] = pathinfo($target_path, PATHINFO_BASENAME);
 		$sql .= '`pdf_file` = "'.$template['pdf_file'].'"';
 	} else { $flag++; $msg.='Error with PDF file<br />'; }

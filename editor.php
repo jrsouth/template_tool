@@ -45,7 +45,7 @@ echo '<?xml version="1.0" encoding="utf-8" ?>';
 
 
 <?php // Put restart link in if template already selected
-if (isset($_GET['template_id'])) {
+if (isset($_GET['template_id']) || isset($_POST['template_id'])) {
     echo '<br style="clear:both;"/><a href="'.$_SERVER['PHP_SELF'].'">&lt;&lt; Back to template selection</a>';
 }
 ?>

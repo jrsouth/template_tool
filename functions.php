@@ -488,6 +488,7 @@ function displayForm() {
 
 
 	foreach ($images as $image) { // display image fields in order
+          if ($image['hide'] != 1) {
 
 		echo '<p><span class="field-title">'.$image['name'].': </span> ';
 		echo '<span class="field-character-count"> (JPEG, PNG or GIF images only)</span><br />';
@@ -506,7 +507,7 @@ function displayForm() {
 			echo '<input type="hidden" name="'.('img'.$image['id'].'hidden').'" value="'.$local_imgfile.'" />';
 			echo '<br /><span class="field-current-image"><strong>&nbsp;&nbsp;&nbsp;&bullet;&nbsp;Current file:</strong> '.substr(basename($local_imgfile), 14).'</span></p>';
 		}
-
+          }
 	}
 	
 	$parentLocation_x = 0;
