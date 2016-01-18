@@ -7,14 +7,32 @@
  */
 
 // Require authentication (super simple and not particularly secure)
+
+// Code for managing php_fpm
+// Needs lines below in .htaccess
+//
+// RewriteEngine on
+// RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+
+// split the user/pass parts
+
+if (!isset($_SERVER['PHP_AUTH_USER'])) {
+    list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+    if (strlen($_SERVER['PHP_AUTH_USER']) == 0 || strlen($_SERVER['PHP_AUTH_PW']) == 0) {
+        unset($_SERVER['PHP_AUTH_USER']);
+        unset($_SERVER['PHP_AUTH_PW']);
+    }
+}
+
+// Do the Authentication
 require('settings-core.php');
 if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] != $editor_username || $_SERVER['PHP_AUTH_PW'] != $editor_password) {
     header('WWW-Authenticate: Basic realm="Template Editor"');
     header('HTTP/1.0 401 Unauthorized');
     echo('You must be authorised to access this page.');
     exit;
-} 
-unset($login_username, $login_password);
+}
+unset($editor_username, $editor_password);
 
 
 // Require function and class files, and run process.php to handle input
@@ -57,7 +75,8 @@ if (isset($_GET['template_id']) || isset($_POST['template_id'])) {
 
 if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
-
+    // Clear out cached previews and thumbnail
+    clearTemplateCache($_POST['template_id']);
 
     if (isset($_GET['action']) && $_GET['action'] == 'duplicate') {
 

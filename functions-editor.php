@@ -100,6 +100,33 @@ function validateTemplatePostData($id) {
 
 }
 
+function clearTemplateCache($id = '*') {
+/*
+Deletes cached thumbnails and previews to ensure displayed images are up to date.
+
+If no parameter is set it deletes all previews and thumbnails by setting $id to '*',
+which then matches and removes ALL cached template files using the glob() function
+
+Removes:
+  cache/default/template_$id_*
+  cache/thumbnails/template_$id.*
+*/
+
+// Get list of files to delete
+$previewFiles = glob('cache/default/template_' . $id . '_*');
+$thumbnailFiles = glob('cache/thumbnails/template_' . $id . '.*');
+
+$filesToDelete = array_merge($previewFiles, $thumbnailFiles);
+
+// Do the deletion
+if ($filesToDelete) {
+  foreach ($filesToDelete as $file) {
+    unlink($file);
+  }
+}
+
+}
+
 
 /**
  *
@@ -136,8 +163,18 @@ $template = getTemplate($id);
 
 		if (!$flag && mysql_query($sql)) {
 			echo 'TEMPLATE INSERTED/UPDATED!<br />';
-			// Update $templates to reflect new insertion
-			if ($id == 'new') {$id = mysql_insert_id();}
+			// Set $id if not already set (i.e. if it's a creation, not an edit)
+                        if ($id == 'new') {
+                          $id = mysql_insert_id();
+                        }
+
+                        // Delete any existing thumbnails and previews for the template
+                        // Now done by main editor.php page on any submission to
+                        // avoid duplication of effort.
+                        //
+                        // clearTemplateCache($id);
+
+			// Update $template to reflect new insertion
 			$template = getTemplate($id);
 		} else {
 			echo 'AN ERROR OCCURRED :(';
