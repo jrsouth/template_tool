@@ -1,5 +1,6 @@
-# Ignore local settings file
+# Ignore local settings file(s)
 settings.php
+.htaccess
 
 # Ignore phptidy configuration file and backup files
 .phptidy-config.php
