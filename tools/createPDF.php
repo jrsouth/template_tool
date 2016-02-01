@@ -240,12 +240,12 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 
 	$pdf = new FPDI();
 	$pdf->addPage('L', array(150, 80));
-	$pdf->AddFont('Bliss', '', 'blissproheavy.php');
-	$pdf->SetFont('Bliss');
-	$pdf->SetFontSize(40);
+	$pdf->AddFont('Lucida Sans Unicode', '', 'lucida_sans_unicode.php');
+	$pdf->SetFont('Lucida Sans Unicode');
+	$pdf->SetFontSize(50);
 	$pdf->SetTextColor(226, 0, 26);
 	$pdf->Text(25, 25, "OH NO!");
-	$pdf->SetFontSize(10);
+	$pdf->SetFontSize(25);
 	$pdf->SetTextColor(127, 127, 127);
 	$pdf->Text(25, 35, "An error occurred...");
 

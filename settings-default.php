@@ -6,6 +6,7 @@
  * @package template_tool
  */
 
+$site_name = "Organisation Name";
 
 $db_server = 'localhost:3306';
 $db_database = 'template_tool';
