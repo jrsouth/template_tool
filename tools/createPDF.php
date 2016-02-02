@@ -126,15 +126,7 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 
 		foreach ($images as $image) { // display images in order
 
-			if (file_exists($base_path . 'storage/templates/default_images/default_image_'.$image['id'].'.jpg')) {  // Set up default value
-				$imgfile = $base_path . 'storage/templates/default_images/default_image_'.$image['id'].'.jpg';
-			} else if (file_exists($base_path . 'storage/templates/default_images/default_image_'.$image['id'].'.png')) {  // Set up default value
-					$imgfile = $base_path . 'storage/templates/default_images/default_image_'.$image['id'].'.png';
-				} else if (file_exists($base_path . 'storage/templates/default_images/default_image_'.$image['id'].'.gif')) {  // Set up default value
-					$imgfile = $base_path . 'storage/templates/default_images/default_image_'.$image['id'].'.gif';
-				} else {
-				$imgfile = $base_path . 'images/placeholder.jpg';
-			}
+		$imgfile = $base_path . getDefaultImage($image['id']);
 
 			if (isset($working_template['img'.$image['id']])) { // Override if set
 				$imgfile = $working_template['img'.$image['id']];

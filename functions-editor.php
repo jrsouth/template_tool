@@ -363,7 +363,7 @@ function displayFieldEditor($field) {
 	if ($field['id'] == 'new') {
 		echo '<tr class="header"><td colspan="2">New field</td></tr>';
 	} else {
-		echo '<tr class="header"><td colspan="2">'.$field['name'].' <div style="float:right;font-size:.75em">Field #'.$field['id'].'</div> <a style="color:#990000;font-size:.5em;" href="editor.php?template_id='.$field['template_id'].'&remove='.$field['id'].'">[delete]</a></td></tr>';
+		echo '<tr class="header"><td colspan="2">'.$field['name'].' <div style="float:right;font-size:.75em">Field #'.$field['id'].'</div> <a style="color:#990000;font-size:.5em;" href="editor.php?template_id='.$field['template_id'].'&removeField='.$field['id'].'">[delete]</a></td></tr>';
 	}
 
 	echo '<tr>';
@@ -462,104 +462,77 @@ function displayFieldEditor($field) {
  * @param unknown $field
  */
 function displayImageEditor($image) {
-	global $fonts, $colours, $template, $fields;
+	global $fonts, $colours, $template, $images;
 
-echo('<p>COMING SOON!</p>');
 
-/*
-	if ($field['id'] == 'new') {
-		echo '<tr class="header"><td colspan="2">New field</td></tr>';
+	if ($image['id'] == 'new') {
+		echo '<tr class="header"><td colspan="2">New image</td></tr>';
 	} else {
-		echo '<tr class="header"><td colspan="2">'.$field['name'].' <a style="color:#990000;font-size:.5em;" href="editor.php?template_id='.$field['template_id'].'&remove='.$field['id'].'">[delete]</a></td></tr>';
+		echo '<tr class="header"><td colspan="2">'.$image['name'].' <a style="color:#990000;font-size:.5em;" href="editor.php?template_id='.$image['template_id'].'&removeImage='.$image['id'].'">[delete]</a></td></tr>';
 	}
 
 	echo '<tr>';
 
 
-	echo '<td id="field'.$field['id'].'menu" class="field-menu">';
-	echo '<span id="field'.$field['id'].'menu-basic" style="font-weight:bold;" class="fake-link"
-  onclick="hideAllBut(\'field'.$field['id'].'main\', \'field'.$field['id'].'basic\');makeBold(this);">Basic information</span><hr />';
-	echo '<span id="field'.$field['id'].'menu-pos" class="fake-link"
-  onclick="hideAllBut(\'field'.$field['id'].'main\', \'field'.$field['id'].'pos\');makeBold(this);">Positioning</span><hr />';
-	echo '<span id="field'.$field['id'].'menu-font" class="fake-link"
-  onclick="hideAllBut(\'field'.$field['id'].'main\', \'field'.$field['id'].'font\');makeBold(this);">Font</span><hr />';
+	echo '<td id="image'.$image['id'].'menu" class="image-menu">';
+	echo '<span id="image'.$image['id'].'menu-basic" style="font-weight:bold;" class="fake-link"
+  onclick="hideAllBut(\'image'.$image['id'].'main\', \'image'.$image['id'].'basic\');makeBold(this);">Basic information</span><hr />';
+	echo '<span id="image'.$image['id'].'menu-pos" class="fake-link"
+  onclick="hideAllBut(\'image'.$image['id'].'main\', \'image'.$image['id'].'pos\');makeBold(this);">Positioning</span><hr />';
 	echo '</td>';
 
 
 	echo '<td>';
-	echo '<div id="field'.$field['id'].'main">';
+	echo '<div id="image'.$image['id'].'main">';
 
 
-	echo '<div id="field'.$field['id'].'basic">';
+	echo '<div id="image'.$image['id'].'basic">';
 
-	echo 'Field Name:<br /><input type="text" name="field-'.$field['id'].'-name" value="'.$field['name'].'" /></br />';
-
-
-	echo 'Default Text:<br /><textarea rows="4" name="field-'.$field['id'].'-default_text">'.$field['default_text'].'</textarea><br />';
+	echo 'Image Name:<br /><input type="text" name="image-'.$image['id'].'-name" value="'.$image['name'].'" /></br />';
 
 
-	echo 'Character limit:<br /><input type="text" name="field-'.$field['id'].'-character_limit" value="'.$field['character_limit'].'" /><br />';
+	echo 'Default Image:<br />';
+	$defaultImage = getDefaultImage($image['id']);
+	echo '<img src="'.$defaultImage.'" style="max-height: 100px;"/><br />';		
+	
 
-	// PARENT SELECTOR
-	echo 'Parent: <select name="field-'.$field['id'].'-parent">';
-	echo '<option value="0"'.($field['parent']==0?' selected="selected"':'').'>No parent</option>';
-	foreach ($fields as $f) {
-		if ($f['id'] != $field['id']) {
-			echo '<option value="'.$f['id'].'"'.($field['parent']==$f['id']?' selected="selected"':'').'>'.$f['name'].'</option>';
-		}
-	}
-	echo '</select> ';
 
+
+	echo '</div>';
+
+
+
+	echo '<div id="image'.$image['id'].'pos" style="display:none;">';
+	
 	// PAGE SELECTOR
-	echo 'Page: <select name="field-'.$field['id'].'-page">';
+	echo 'Page: <select name="image-'.$image['id'].'-page">';
 	for ($i = 1; $i <= $template['pagecount']; $i++) {
-		echo '<option value="'.$i.'"'.($field['page']==$i?' selected="selected"':'').'>Page '.$i.'</option>';
+		echo '<option value="'.$i.'"'.($image['page']==$i?' selected="selected"':'').'>Page '.$i.'</option>';
 	}
 	echo '</select><br />';
 
-	echo '</div>';
+	echo 'X-pos (mm): <input class="short" type="text" name="image-'.$image['id'].'-x_position" value="'.$image['x_position'].'" /> ';
+	echo 'Y-pos (mm): <input class="short" type="text" name="image-'.$image['id'].'-y_position" value="'.$image['y_position'].'" /> ';
+	echo('<br />');
+	echo 'Width (mm): <input class="short" type="text" name="image-'.$image['id'].'-width" value="'.$image['width'].'" /> ';
+	echo 'Height (mm): <input class="short" type="text" name="image-'.$image['id'].'-height" value="'.$image['height'].'" /> ';
+   echo('<br />');
 
-
-
-	echo '<div id="field'.$field['id'].'pos" style="display:none;">';
-
-	echo 'X-pos (mm): <input class="short" type="text" name="field-'.$field['id'].'-x_position" value="'.$field['x_position'].'" /><br />';
-	echo 'Y-pos (mm): <input class="short" type="text" name="field-'.$field['id'].'-y_position" value="'.$field['y_position'].'" /><br />';
-
-	echo 'Wrap width (if applicable):<br /><input class="short" type="text" name="field-'.$field['id'].'-wrap_width" value="'.$field['wrap_width'].'" /><br />';
-
-
-	echo '</div>';
-
-
-
-	echo '<div id="field'.$field['id'].'font" style="display:none;">';
-
-	echo 'Font size:<br /><input class="short" type="text" name="field-'.$field['id'].'-font_size" value="'.$field['font_size'].'" /><br />';
-
-	echo 'Leading:<br /><input class="short" type="text" name="field-'.$field['id'].'-leading" value="'.$field['leading'].'" /><br />';
-	// FONT SELECTOR
-	echo 'Font: <select name="field-'.$field['id'].'-font_id">';
-	foreach ($fonts as $font) {
-		echo '<option value="'.$font['id'].'"'.($field['font_id']==$font['id']?' selected="selected"':'').'>'.$font['display_name'].'</option>';
-	}
-	echo '</select> ';
-
-	// COLOUR SELECTOR
-	echo 'Colour: <select name="field-'.$field['id'].'-colour_id">';
-	foreach ($colours as $colour) {
-		echo '<option value="'.$colour['id'].'"'.($field['colour_id']==$colour['id']?' selected="selected"':'').'>'.$colour['name'].'</option>';
+	$alignments = getAllImageAlignments();
+	echo 'Alignment: <select name="image-'.$image['id'].'-alignment">';
+	foreach ($alignments as $alignment) {
+		echo '<option value="'.$alignment['value'].'"'.($image['alignment']==$alignment['value']?' selected="selected"':'').'>'.$alignment['display'].'</option>';
 	}
 	echo '</select><br />';
-
-	echo '<input type="checkbox" name="field-'.$field['id'].'-force_uppercase"'.($field['force_uppercase']>0?' checked="checked"':'').' /> Force Uppercase?<br />';
+	
 
 	echo '</div>';
+
 
 
 	echo '</div>';
 	echo '</tr>';
-*/
+
 }
 
 
@@ -605,12 +578,12 @@ function getAllImageAlignments() {
 	// Hard coded for now - no need for DB connection
 
 	$alignments = array();
-	$alignments[] = array('value' => 'center', 'display' => 'Centered: fitted to bounding box, placed in center of frame');
-	$alignments[] = array('value' => 'fill', 'display' => 'Fill: proportionally expanded to fill bounding box (some cropping)');
-	$alignments[] = array('value' => 'ul', 'display' => 'Upper-left: fit to bounding box, placed in top left corner');
-	$alignments[] = array('value' => 'ur', 'display' => 'Upper-right: fit to bounding box, placed in top right corner');
-	$alignments[] = array('value' => 'ul', 'display' => 'Lower-left: fit to bounding box, placed in lower left corner');
-	$alignments[] = array('value' => 'ul', 'display' => 'Lower-right: fit to bounding box, placed in lower right corner');
+	$alignments[] = array('value' => 'center', 'display' => 'Centered: scaled proportionally to fit, then placed in the center of frame');
+	$alignments[] = array('value' => 'fill', 'display' => 'Fill: scaled proportionally to completely fill the bounding box, cropped if needed');
+	$alignments[] = array('value' => 'ul', 'display' => 'Upper-left: scaled proportionally to fit, then placed in the top left corner');
+	$alignments[] = array('value' => 'ur', 'display' => 'Upper-right: scaled proportionally to fit, then placed in the top right corner');
+	$alignments[] = array('value' => 'll', 'display' => 'Lower-left: scaled proportionally to fit, then placed in the lower left corner');
+	$alignments[] = array('value' => 'lr', 'display' => 'Lower-right: scaled proportionally to fit, then placed in the lower right corner');
 
 	return $alignments;
 

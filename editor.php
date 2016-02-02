@@ -168,16 +168,16 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
     }
 
 
-    if (isset($_GET['remove'])) { // Removing a field
+    if (isset($_GET['removeField'])) { // Removing a field
 
         echo '<div class="delete-box"><h3>Delete</h3>';
 
-        $deleteField = getField($_GET['remove']);
+        $deleteField = getField($_GET['removeField']);
 
         if (isset($_GET['confirm']) && $_GET['confirm'] == 'yes') {
 
             // DELETE FIELD
-            $delete_sql = 'DELETE FROM `fields` WHERE `id` = '.$_GET['remove'];
+            $delete_sql = 'DELETE FROM `fields` WHERE `id` = '.$_GET['removeField'];
             if (mysql_query($delete_sql)) {
                 echo 'FIELD DELETED!';
             } else {

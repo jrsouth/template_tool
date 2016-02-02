@@ -461,7 +461,21 @@ function get_images($template_id, $pageno = 0) {
 
 
 
-
+function getDefaultImage($id) {
+	global $base_path;
+			if (file_exists($base_path . 'storage/templates/default_images/default_image_'.$id.'.jpg')) {  // Set up default value
+				$imgfile = 'storage/templates/default_images/default_image_'.$id.'.jpg';
+			} else if (file_exists($base_path . 'storage/templates/default_images/default_image_'.$id.'.png')) {  // Set up default value
+				$imgfile = 'storage/templates/default_images/default_image_'.$id.'.png';
+			} else if (file_exists($base_path . 'storage/templates/default_images/default_image_'.$id.'.gif')) {  // Set up default value
+				$imgfile = 'storage/templates/default_images/default_image_'.$id.'.gif';
+			} else {
+				$imgfile = 'images/placeholder.jpg';
+			}
+			
+			return($imgfile);
+	
+}
 
 /**
  *
@@ -594,26 +608,17 @@ function placeImage($pdf, $imgfile, $bbxloc, $bbyloc, $bbwidth, $bbheight, $plac
 		$imgratio = $imgsize[0]/$imgsize[1];
 		$bbratio = $bbwidth/$bbheight;
 
-		//echo('Performing "FILL" calculations...<br />');
-
 		if ($imgratio != $bbratio) { // No cropping if ratios match
 
 			$tmpimg = $cache_path . 'img/'.uniqid('TEMPIMG').'.jpg';
 
 			$im = new imagick($imgfile);
 
-			//echo('Original: ' .$im->getImageWidth(). 'x' .$im->getImageHeight(). '<br />');
-
 			if ($imgratio < $bbratio) { // Image too tall
-				//echo('Image too tall!<br />');
-				//echo('Cropping to '.$im->getImageWidth().'x'.$im->getImageWidth()/$bbratio.'<br />');
 				$im->cropImage($im->getImageWidth(), $im->getImageWidth()/$bbratio, 0, 0.5*($im->getImageHeight() - $im->getImageWidth()/$bbratio));
 			} else { // Image too wide
-				//echo('Image too wide!<br />');
 				$im->cropImage($im->getImageHeight()*$bbratio, $im->getImageHeight(), 0.5*($im->getImageWidth() - $im->getImageHeight()*$bbratio), 0);
 			}
-
-			//echo('Cropped: ' .$im->getImageWidth(). 'x' .$im->getImageHeight(). '<br />');
 
 			$im->setCompression(Imagick::COMPRESSION_JPEG);
 			$im->setCompressionQuality(100);

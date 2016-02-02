@@ -6,4 +6,4 @@ settings.php
 .phptidy-config.php
 .phptidy-cache
 *.phptidybak~
-
+*.php~
