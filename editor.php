@@ -225,7 +225,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
                 // Update $fields to reflect new insertion
                 $fields = getTemplateFields($_POST['template_id']);
             } else {
-                debug('<p><strong>AN ERROR OCCURRED :( </strong></p><p>FLAG = '.$flag.'</p><p>$msg: <br />'.$msg.'</p><p>SQL statement:<br />'.$insert_sql.'</p>');
+                debug('<p><strong>AN ERROR OCCURRED :( </strong></p><p>FLAG = '.$flag.'</p><p>$msg: <br />'.$msg.'</p><p>SQL statement:<br />'.$update_sql.'</p>');
             }
 
         } else { // If it's an update to existing field(s)
@@ -242,7 +242,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
                 $update_sql = 'UPDATE `fields` SET ' . $sql . ' WHERE `id` = ' . $field['id'];
 
                 if ($flag || !mysql_query($update_sql)) {
-                    debug('<p><strong>AN ERROR OCCURRED :( </strong></p><p>FLAG = '.$flag.'</p><p>$msg: <br />'.$msg.'</p><p>SQL statement:<br />'.$insert_sql.'</p>');
+                    debug('<p><strong>AN ERROR OCCURRED :( </strong></p><p>FLAG = '.$flag.'</p><p>$msg: <br />'.$msg.'</p><p>SQL statement:<br />'.$update_sql.'</p>');
                     $update_error = true;
                 }
 
@@ -261,7 +261,63 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
 
 
+// PROCESS IMAGE SAVING
 
+   if (isset($_POST['saveimage'])) { // If save image button has been pressed
+
+        if (isset($_POST['create']) && $_POST['create'] == 'new') { // If it's a new image
+
+            // Validate entered values - make sure numbers are numbers, etc.
+            $validation = validateImagePostData('new');
+            $flag = $validation['flag'];
+            $msg = $validation['msg'];
+            $sql = $validation['sql'];
+
+            $insert_sql = 'INSERT INTO `images` SET `id` = NULL, ' . $sql;
+
+            if (!$flag && mysql_query($insert_sql)) {
+                echo 'IMAGE INSERTED!<br />(Values are kept below in case you need to enter a similar new image)';
+                // Update $images to reflect new insertion
+                $images = getTemplateImages($_POST['template_id']);
+                
+                // Upload default image
+                $new_image_id = mysqli_insert_id();
+                
+                
+            } else {
+                debug('<p><strong>AN ERROR OCCURRED :( </strong></p><p>FLAG = '.$flag.'</p><p>$msg: <br />'.$msg.'</p><p>SQL statement:<br />'.$update_sql.'</p>');
+            }
+
+        } else { // If it's an update to existing image(s)
+
+            $update_error = false;
+
+            foreach ($images as $image) {
+                // Validate entered values - make sure numbers are numbers, etc.
+                $validation = validateImagePostData($image['id']);
+                $flag = $validation['flag'];
+                $msg = $validation['msg'];
+                $sql = $validation['sql'];
+
+                $update_sql = 'UPDATE `images` SET ' . $sql . ' WHERE `id` = ' . $image['id'];
+
+                if ($flag || !mysql_query($update_sql)) {
+                    debug('<p><strong>AN ERROR OCCURRED :( </strong></p><p>FLAG = '.$flag.'</p><p>$msg: <br />'.$msg.'</p><p>SQL statement:<br />'.$update_sql.'</p>');
+                    $update_error = true;
+                }
+
+
+            }
+
+            if (!$update_error) {
+                echo 'IMAGES(S) UPDATED!';
+                // Update $images to reflect new insertions
+                $images = getTemplateImages($_POST['template_id']);
+            }
+
+        }
+
+    }
 
 
 
@@ -385,7 +441,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
     echo '<input type="hidden" name="template_id" value="'.$_POST['template_id'].'" />';
 
-    echo '<input class="button" type="submit" name="savefield" value="Save Changes" />';
+    echo '<input class="button" type="submit" name="saveimage" value="Save Changes" />';
 
     echo '<table class="editor">';
 
@@ -395,7 +451,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
     echo '</table>';
 
-    echo '<br /><input class="button" type="submit" name="savefield" value="Save Changes" />';
+    echo '<br /><input class="button" type="submit" name="saveimage" value="Save Changes" />';
 
     echo '</form>';
 

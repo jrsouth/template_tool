@@ -352,6 +352,66 @@ function validateFieldPostData($fieldID) {
 }
 
 
+
+
+
+
+/**
+ *
+ *
+ * @param unknown $imageID
+ * @return unknown
+ */
+function validateImagePostData($imageID) {
+	global $template;
+
+	$prefix = 'image-' . $imageID . '-';
+
+	$flag = 0;
+	$msg = '';
+	$sql = '`template_id` = '.$template['id'];
+
+	if (isset($_POST[$prefix.'name']) && trim($_POST[$prefix.'name']) != '') {
+		$sql .= ', `name` = "'.trim($_POST[$prefix.'name']).'"';
+	} else { $flag++; $msg.='Error with name<br />'; }
+	
+		if (isset($_POST[$prefix.'x_position']) && is_numeric($_POST[$prefix.'x_position'])) {
+		$sql .= ', `x_position` = '. $_POST[$prefix.'x_position'];
+	} else { $flag++; $msg.='Error with x_position<br />'; }
+
+
+	if (isset($_POST[$prefix.'y_position']) && is_numeric($_POST[$prefix.'y_position'])) {
+		$sql .= ', `y_position` = '. $_POST[$prefix.'y_position'];
+	} else { $flag++; $msg.='Error with y_position<br />'; }
+
+	if (isset($_POST[$prefix.'width']) && is_numeric($_POST[$prefix.'width'])) {
+		$sql .= ', `width` = '.$_POST[$prefix.'width'];
+	} else { $flag++; $msg.='Error with width<br />'; }
+
+
+	if (isset($_POST[$prefix.'height']) && is_numeric($_POST[$prefix.'height'])) {
+		$sql .= ', `height` = '.$_POST[$prefix.'height'];
+	} else { $flag++; $msg.='Error with height<br />'; }
+
+
+	if (isset($_POST[$prefix.'alignment'])) {
+		$sql .= ', `alignment` = "'.$_POST[$prefix.'alignment'].'"';
+	} else { $flag++; $msg.='Error with alignment<br />'; }
+
+
+	if (isset($_POST[$prefix.'page'])) {
+		$sql .= ', `page` = '.$_POST[$prefix.'page'];
+	} else { $flag++; $msg.='Error with page<br />'; }
+
+	return array('flag' => $flag, 'msg' => $msg, 'sql' => $sql);
+
+}
+
+
+
+
+
+
 /**
  *
  *
