@@ -1,4 +1,5 @@
 <?php
+
 /**
  * editor.php
  *
@@ -336,21 +337,25 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
                     $update_error = true;
                 }
                 
-                if (isset($_FILES['image-'.$image['id'].'-default-image']) && isset($_FILES['image-'.$image['id'].'-default-image']['upload'])) {
+                if (isset($_FILES['image-'.$image['id'].'-default-image'])) {
                 	debug('New default image detected');
-                
+                	
+                	$upload_tmp = $_FILES['image-'.$image['id'].'-default-image']['tmp_name'];
                 	$target_path = $storage_path . 'templates/default_images/default_image_'.$image['id'].'.'.pathinfo($_FILES['image-'.$image['id'].'-default-image']['name'], PATHINFO_EXTENSION);
-					 	if ($success = move_uploaded_file($_FILES['image-'.$image['id'].'-default-image']['tmp_name'], $target_path)) {
+                	
+					 	if ($success = move_uploaded_file($upload_tmp, $target_path)) {
 							debug('New default image file uploaded successfully.');
 				    	} else {
-							debug('Error uploading new default image file from<br/>'.$_FILES['image-'.$image['id'].'-default-image']['tmp_name'].'<br /> to <br />'.$target_path);		
+							debug('Error uploading new default image file from<br/>'.$upload_tmp.'<br /> to <br />'.$target_path);		
 							debug('Upload error was: '.$_FILES['image-'.$image['id'].'-default-image']['error']);	
-							debug('Return value of move_uploaded_file() was: '.($success?'true':'false'));	
+							debug('Return value of move_uploaded_file() was: '.(gettype($success)).' '.($success?'true':'false'));	
+							debug('is_uploaded_file(): ' . gettype(is_uploaded_file($upload_tmp)) .' '. (is_uploaded_file($upload_tmp)?'true':'false'));
+							debug('[upload] value: ' . gettype($_FILES['image-'.$image['id'].'-default-image']['upload']) .' '. $_FILES['image-'.$image['id'].'-default-image']['upload']);
 							debug('Size of uploaded file: '.$_FILES['image-'.$image['id'].'-default-image']['size'].' bytes.');
-							debug('Size of uploaded file (filesystem): '.filesize($_FILES['image-'.$image['id'].'-default-image']['tmp_name']));
-							debug('MIME type of uploaded file: '.$_FILES['image-'.$image['id'].'-default-image']['type']);
+							debug('Size of uploaded file (filesystem): '.filesize($upload_tmp));
+							debug('Client-reported MIME type of uploaded file: '.$_FILES['image-'.$image['id'].'-default-image']['type']);
 				 	 	}
-                
+               
                 }
 
 
@@ -496,6 +501,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
     echo '<input type="hidden" name="template_id" value="'.$_POST['template_id'].'" />';
     echo '<input type="hidden" name="create" value="new" />';
+    echo '<input type="hidden" name="from-editor" value="true" />';
 
     echo '<table class="editor">';
 
@@ -535,10 +541,11 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
     echo '<div id="section-edit-images" style="display: none;">';
 
-    echo '<form action="'.$_SERVER['PHP_SELF'].'" method="POST" enctype="multipart/form-data">';
+    echo '<form action="'.$_SERVER['PHP_SELF'].'?template_id='.$_POST['template_id'].'" method="POST" enctype="multipart/form-data">';
 
     echo '<input type="hidden" name="template_id" value="'.$_POST['template_id'].'" />';
-
+    echo '<input type="hidden" name="from-editor" value="true" />';
+    
     echo '<input class="button" type="submit" name="saveimage" value="Save Changes" />';
 
     echo '<table class="editor">';

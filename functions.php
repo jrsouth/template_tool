@@ -16,10 +16,10 @@
  * @param unknown $msg
  */
 function debug($msg = null) {
-	static $debug_msg = '<div style="float:right;"><a href="#" onclick="document.getElementById(\'debug-window\').remove();">[close messages]</a></div><strong>Debug message(s):</strong><br /><br />';
+	static $debug_msg = '';
    
-   if ($msg==null) {
-		return('<div id="debug-window">' . $debug_msg . '</div>');
+   if ($msg==null && $debug_msg != '') {
+		return('<div id="debug-window"><div style="float:right;"><a href="#" onclick="document.getElementById(\'debug-window\').remove();">[close messages]</a></div><strong>Debug message(s): </strong><br /><br />' . $debug_msg . '</div>');
    } else {
 		$debug_msg .= '<hr /><pre>' . $msg . '</pre>';
 	}

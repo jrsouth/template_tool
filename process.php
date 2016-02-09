@@ -30,7 +30,6 @@ $base_path = dirname(__FILE__) . '/' ;
 $cache_path = $base_path . $cache_location;
 $content_path = $base_path . 'content/';
 $storage_path = $base_path . 'storage/';
-ini_set('upload_tmp_dixxxxr', $cache_path.'upload/');
 
 // Set font path for FPDF
 define('FPDF_FONTPATH', $base_path.'storage/fonts/');
@@ -73,9 +72,10 @@ if ($working_template_id) {
 
 
 
-if (isset($_FILES)) { // Process any input files
+if (isset($_FILES) && !isset($_POST['from-editor'])) { // Process any user input files
+debug("Standard image upload code");
 	foreach ($_FILES as $key => $image) {
-		if ($image['error'] == 0 && getimagesize($image['tmp_name'])) { //upload succesful and check for valid image file
+		if ($image['error'] == 0 && getimagesize($image['tmp_name'])) { // upload successful and check for valid image file
 			$target_path = $cache_path . 'upload/'.uniqid().'_'.basename($image['name']); // Potentially use userid in future for additional entropy/identification
 			if (move_uploaded_file($image['tmp_name'], $target_path)) {
 				$_FILES[$key]['upload'] = $target_path;
