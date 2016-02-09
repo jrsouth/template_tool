@@ -58,7 +58,6 @@ echo '<?xml version="1.0" encoding="utf-8" ?>';
 
 <body>
 
-
 <?php require $content_path . 'header.chunk'; ?>
 
 
@@ -195,6 +194,33 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
     }
 
+    if (isset($_GET['removeImage'])) { // Removing a field
+
+        echo '<div class="delete-box"><h3>Delete</h3>';
+
+        $deleteImage = getImage($_GET['removeImage']);
+
+        if (isset($_GET['confirm']) && $_GET['confirm'] == 'yes') {
+
+            // DELETE IMAGE
+            $delete_sql = 'DELETE FROM `images` WHERE `id` = '.$_GET['removeImage'];
+            if (mysql_query($delete_sql)) {
+                echo 'IMAGE DELETED!';
+            } else {
+                echo 'AN ERROR HAPPENED :(';
+            }
+
+        } else { // Get confirmation
+
+            echo 'Are you sure you want to delete <strong>"'.$deleteImage['name'].'"</strong> from <strong>"'.$template['name'].'"</strong>?<br />';
+            echo '<a href="'.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'&confirm=yes">Delete</a> | <a href="'.$_SERVER['PHP_SELF'].'?template_id='.$template['id'].'">Cancel</a>';
+
+        }
+
+        echo '</div>';
+
+    }
+
 
     // Get font and colour values
 
@@ -281,8 +307,12 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
                 $images = getTemplateImages($_POST['template_id']);
                 
                 // Upload default image
-                $new_image_id = mysqli_insert_id();
+                $new_image_id = mysql_insert_id();
+                if (isset($_FILES['image-new-default-image']) && isset($_FILES['image-new-default-image']['upload'])) {
+                // Image uploaded
+                debug('Default image detected (not yet saving though!)'); 
                 
+                }
                 
             } else {
                 debug('<p><strong>AN ERROR OCCURRED :( </strong></p><p>FLAG = '.$flag.'</p><p>$msg: <br />'.$msg.'</p><p>SQL statement:<br />'.$update_sql.'</p>');
@@ -304,6 +334,23 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
                 if ($flag || !mysql_query($update_sql)) {
                     debug('<p><strong>AN ERROR OCCURRED :( </strong></p><p>FLAG = '.$flag.'</p><p>$msg: <br />'.$msg.'</p><p>SQL statement:<br />'.$update_sql.'</p>');
                     $update_error = true;
+                }
+                
+                if (isset($_FILES['image-'.$image['id'].'-default-image']) && isset($_FILES['image-'.$image['id'].'-default-image']['upload'])) {
+                	debug('New default image detected');
+                
+                	$target_path = $storage_path . 'templates/default_images/default_image_'.$image['id'].'.'.pathinfo($_FILES['image-'.$image['id'].'-default-image']['name'], PATHINFO_EXTENSION);
+					 	if ($success = move_uploaded_file($_FILES['image-'.$image['id'].'-default-image']['tmp_name'], $target_path)) {
+							debug('New default image file uploaded successfully.');
+				    	} else {
+							debug('Error uploading new default image file from<br/>'.$_FILES['image-'.$image['id'].'-default-image']['tmp_name'].'<br /> to <br />'.$target_path);		
+							debug('Upload error was: '.$_FILES['image-'.$image['id'].'-default-image']['error']);	
+							debug('Return value of move_uploaded_file() was: '.($success?'true':'false'));	
+							debug('Size of uploaded file: '.$_FILES['image-'.$image['id'].'-default-image']['size'].' bytes.');
+							debug('Size of uploaded file (filesystem): '.filesize($_FILES['image-'.$image['id'].'-default-image']['tmp_name']));
+							debug('MIME type of uploaded file: '.$_FILES['image-'.$image['id'].'-default-image']['type']);
+				 	 	}
+                
                 }
 
 
@@ -340,8 +387,9 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
     echo '<div class="top-tab" style="background-color: #666666; color: #FFFFFF;" onclick="hideAllBut(\'section-parent\', \'section-new-field\');makeInverted(this);">New field</div>';
     echo '<div class="top-tab" onclick="hideAllBut(\'section-parent\', \'section-edit-fields\');makeInverted(this);">Edit fields</div>';
+    echo '<div class="top-tab" onclick="hideAllBut(\'section-parent\', \'section-new-image\');makeInverted(this);">New image</div>';
     echo '<div class="top-tab" onclick="hideAllBut(\'section-parent\', \'section-edit-images\');makeInverted(this);">Edit images</div>';
-    echo '<div class="top-tab" onclick="hideAllBut(\'section-parent\', \'section-edit-template\');makeInverted(this);">Edit template</div>';
+    echo '<div class="top-tab last" onclick="hideAllBut(\'section-parent\', \'section-edit-template\');makeInverted(this);">Edit template</div>';
     echo '<br class="clear" />';
 
     echo '</div>';
@@ -433,11 +481,61 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
 
 
+
+// ----------------- CREATE NEW IMAGE ---------------------------------------------
+
+
+
+    // New field form
+    // echo('<h3>Create new field</h3>');
+
+    echo '<div id="section-new-image" style="display: none;">';
+
+
+    echo '<form action="'.$_SERVER['PHP_SELF'].'" method="POST" enctype="multipart/form-data">';
+
+    echo '<input type="hidden" name="template_id" value="'.$_POST['template_id'].'" />';
+    echo '<input type="hidden" name="create" value="new" />';
+
+    echo '<table class="editor">';
+
+    // echo('<tr class="header"><td colspan="2">New field</td></tr>');
+
+
+    // Create new image
+    $emptyImage = array(
+        'id' => 'new',
+        'template_id' => $template['id'],
+        'name' => (isset($_POST['field-new-name'])?$_POST['field-new-name']:''),
+        'x_position' => (isset($_POST['field-new-x_position'])?$_POST['field-new-x_position']:''),
+        'y_position' => (isset($_POST['field-new-y_position'])?$_POST['field-new-y_position']:''),
+        'width' => (isset($_POST['field-new-width'])?$_POST['field-new-width']:''),
+        'height' => (isset($_POST['field-new-height'])?$_POST['field-new-height']:''),
+        'alignment' => (isset($_POST['field-new-alignment'])?$_POST['field-new-alignment']:''),
+        'page' => 1,
+    );
+    // Show editor
+
+    displayImageEditor($emptyImage);
+
+    echo '</table>';
+
+    echo '<br /><input class="button" type="submit" name="saveimage" value="Insert new image" />';
+
+    echo '</form>';
+
+    echo '</div>'; // End new image section
+
+
+
+
+
+
     // ----------------- EDIT IMAGES ---------------------------------------------
 
     echo '<div id="section-edit-images" style="display: none;">';
 
-    echo '<form action="'.$_SERVER['PHP_SELF'].'" method="POST">';
+    echo '<form action="'.$_SERVER['PHP_SELF'].'" method="POST" enctype="multipart/form-data">';
 
     echo '<input type="hidden" name="template_id" value="'.$_POST['template_id'].'" />';
 
@@ -510,6 +608,9 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
 ?>
 <br style="clear:both;" />
+
+<?php echo($debug?debug():''); ?>
+
 </body>
 
 </html>

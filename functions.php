@@ -15,16 +15,13 @@
  *
  * @param unknown $msg
  */
-function debug($msg) {
-	global $debug;
-
-	if ($debug) {
-		echo '<div style="background-color:#ffcccc;border:#ff0000 1px solid;padding:5px;">';
-		echo '<strong>Debug message:</strong><br />';
-		echo '<pre>';
-		echo $msg;
-		echo '</pre>';
-		echo '</div>';
+function debug($msg = null) {
+	static $debug_msg = '<div style="float:right;"><a href="#" onclick="document.getElementById(\'debug-window\').remove();">[close messages]</a></div><strong>Debug message(s):</strong><br /><br />';
+   
+   if ($msg==null) {
+		return('<div id="debug-window">' . $debug_msg . '</div>');
+   } else {
+		$debug_msg .= '<hr /><pre>' . $msg . '</pre>';
 	}
 
 }
@@ -128,7 +125,7 @@ global $default_templates_layout, $default_templates_available;
 	}
 	echo(' ]');
 */
-
+if(count($tags) > 0) {
 	echo('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
 	echo(' Filter by [ ');
 	foreach ($tags as $key => $tag) {
@@ -148,7 +145,7 @@ global $default_templates_layout, $default_templates_available;
 	if (count($tags_active) > 0) {
 		echo(' <a class="action-link" href="'.$_SERVER['PHP_SELF'].'?step=1&templates_layout='.$templates_layout.'&templates_available='.$templates_available.'" title="Hide &quot;'.$tag.'&quot; templates"> clear filters</a>');
 	}
-
+}
 
 	echo('</p>');
 
@@ -686,7 +683,7 @@ function displayDownloadBox() {
 function getAllTags() {
         $tags = Array();
 
-        $sql = 'SELECT DISTINCT `tags` FROM `templates` WHERE `tags` != ""'; // DISTINCT limits the redundant work that has to be done later
+        $sql = 'SELECT DISTINCT `tags` FROM `templates` WHERE `tags` != "" AND `active` = 1'; // DISTINCT slightly limits the redundant work that has to be done later
         $results = mysql_query($sql);
 
         // Loop through results and add new terms to the array 

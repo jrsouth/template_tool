@@ -271,16 +271,33 @@ span.progressbar-text-first {
 	font-weight: 900;
 }
 form p {
-  margin: 1em 0;
+	margin: 1em 0;
 }
 .field-locator {
-width: 50px;
-height: 50px;
-position: absolute;
-display: none;
+	width: 50px;
+	height: 50px;
+	position: absolute;
+	display: none;
 }
 
 a.action-link {
 	color: #e20021 !important;
 	font-size: .8em;
+}
+
+#debug-window {
+	position: fixed;
+	max-width: 80%;
+	max-height: 80%;
+	top: 4em;
+	right: 4em;
+	background-color: rgba(255,200,200,0.95);
+	border: #ff0000 2px solid;
+	padding: 1em;	
+	box-shadow: 3px 3px 15px rgba(0,0,0,.3);
+	border-radius: .5em;
+}
+
+#debug-window hr {
+	border: 1px solid #ff6666;
 }

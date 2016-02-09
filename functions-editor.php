@@ -552,6 +552,8 @@ function displayImageEditor($image) {
 
 
 	echo 'Default Image:<br />';
+	echo '<input type="file" class="file-input" name="image-'.$image['id'].'-default-image" />';
+	
 	$defaultImage = getDefaultImage($image['id']);
 	echo '<img src="'.$defaultImage.'" style="max-height: 100px;"/><br />';		
 	
@@ -732,6 +734,19 @@ function getField($field_id) {
 	$results = mysql_query($sql);
 	$field = mysql_fetch_array($results);
 	return $field;
+}
+/**
+ *
+ *
+ * @param unknown $field_id
+ * @return unknown
+ */
+function getImage($image_id) {
+	global $db_connection;
+	$sql = 'SELECT * FROM `images` WHERE `id` = '.$image_id;
+	$results = mysql_query($sql);
+	$image = mysql_fetch_array($results);
+	return $image;
 }
 
 

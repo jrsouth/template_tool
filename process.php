@@ -30,6 +30,7 @@ $base_path = dirname(__FILE__) . '/' ;
 $cache_path = $base_path . $cache_location;
 $content_path = $base_path . 'content/';
 $storage_path = $base_path . 'storage/';
+ini_set('upload_tmp_dixxxxr', $cache_path.'upload/');
 
 // Set font path for FPDF
 define('FPDF_FONTPATH', $base_path.'storage/fonts/');

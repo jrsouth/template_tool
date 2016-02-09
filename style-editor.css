@@ -42,8 +42,8 @@ h3 {
 div.top-tabs {
     font-family: 'Bliss Pro Heavy', 'Bliss Pro ExtraBold', 'Lucida Sans', 'Lucida Grande', sans-serif;
     color: #666666;
-    padding: .5em 0;
-    font-size: 1.5em;
+    padding: .5em 1em;
+    font-size: 1.2em;
     margin-top: 1em;
     margin-bottom: .5em;
     text-transform: uppercase;
@@ -52,11 +52,18 @@ div.top-tabs {
 
 div.top-tab {
   float: left;
-  margin-right: 1em;
   padding: .5em;
   cursor: pointer; 
   line-height: 1ex;
-  
+  border-right: 1px solid #000000;
+}
+
+div.top-tab.last {
+  border: 0;
+}
+
+div.top-tab:hover {
+	background-color: #cccccc;
 }
 
 ul.basic-list {
@@ -123,4 +130,8 @@ div.delete-box {
     background-color: #ffcccc;
     padding: 10px;
     border: 1px solid #cc6666;
+}
+
+br.clear {
+	clear: both;
 }
