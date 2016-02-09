@@ -73,7 +73,6 @@ if ($working_template_id) {
 
 
 if (isset($_FILES) && !isset($_POST['from-editor'])) { // Process any user input files
-debug("Standard image upload code");
 	foreach ($_FILES as $key => $image) {
 		if ($image['error'] == 0 && getimagesize($image['tmp_name'])) { // upload successful and check for valid image file
 			$target_path = $cache_path . 'upload/'.uniqid().'_'.basename($image['name']); // Potentially use userid in future for additional entropy/identification
@@ -81,7 +80,7 @@ debug("Standard image upload code");
 				$_FILES[$key]['upload'] = $target_path;
 				$image_locations[$key] = $target_path; // Messy!
 			} else {
-				echo "There was an error uploading the file, please try again!";
+				echo "There was an error uploading a file, please try again!";
 			}
 		} else if (isset($_POST[$key.'hidden']) && $_POST[$key.'hidden'] != '') {
 				$image_locations[$key] = $_POST[$key.'hidden']; // Messy!

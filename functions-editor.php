@@ -552,10 +552,10 @@ function displayImageEditor($image) {
 
 
 	echo 'Default Image:<br />';
-	echo '<input type="file" class="file-input" name="image-'.$image['id'].'-default-image" />';
 	
 	$defaultImage = getDefaultImage($image['id']);
-	echo '<img src="'.$defaultImage.'" style="max-height: 100px;"/><br />';		
+	echo '<img src="'.$defaultImage.'" style="max-height: 100px;"/><br />';
+	echo '<input type="file" class="file-input" name="image-'.$image['id'].'-default-image" />';	
 	
 
 

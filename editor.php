@@ -303,16 +303,29 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
             $insert_sql = 'INSERT INTO `images` SET `id` = NULL, ' . $sql;
 
             if (!$flag && mysql_query($insert_sql)) {
-                echo 'IMAGE INSERTED!<br />(Values are kept below in case you need to enter a similar new image)';
+                debug('IMAGE INSERTED!');
                 // Update $images to reflect new insertion
                 $images = getTemplateImages($_POST['template_id']);
                 
                 // Upload default image
                 $new_image_id = mysql_insert_id();
-                if (isset($_FILES['image-new-default-image']) && isset($_FILES['image-new-default-image']['upload'])) {
+                if (isset($_FILES['image-new-default-image'])) {
                 // Image uploaded
-                debug('Default image detected (not yet saving though!)'); 
+                $upload_tmp = $_FILES['image-new-default-image']['tmp_name'];
+                $target_path = $storage_path . 'templates/default_images/default_image_'.$new_image_id.'.'.pathinfo($_FILES['image-new-default-image']['name'], PATHINFO_EXTENSION);                
                 
+                if ($success = move_uploaded_file($upload_tmp, $target_path)) {
+							debug('New default image file uploaded successfully.');
+				    	} else {
+							debug('Error uploading new default image file from<br/>'.$upload_tmp.'<br /> to <br />'.$target_path);		
+							debug('Upload error was: '.$_FILES['image-'.$image['id'].'-default-image']['error']);	
+							debug('Return value of move_uploaded_file() was: '.(gettype($success)).' '.($success?'true':'false'));	
+							debug('is_uploaded_file(): ' . gettype(is_uploaded_file($upload_tmp)) .' '. (is_uploaded_file($upload_tmp)?'true':'false'));
+							debug('[upload] value: ' . gettype($_FILES['image-'.$image['id'].'-default-image']['upload']) .' '. $_FILES['image-'.$image['id'].'-default-image']['upload']);
+							debug('Size of uploaded file: '.$_FILES['image-'.$image['id'].'-default-image']['size'].' bytes.');
+							debug('Size of uploaded file (filesystem): '.filesize($upload_tmp));
+							debug('Client-reported MIME type of uploaded file: '.$_FILES['image-'.$image['id'].'-default-image']['type']);
+				 	 	}
                 }
                 
             } else {
