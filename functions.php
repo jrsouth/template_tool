@@ -133,7 +133,7 @@ if(count($tags) > 0) {
 		$tags_new_string = getListOfTags($tags_active, $tag);
 		echo('<strong><a href="'.$_SERVER['PHP_SELF'].'?step=1&tags='.$tags_new_string.'&templates_layout='.$templates_layout.'&templates_available='.$templates_available.'" title="Hide &quot;'.$tag.'&quot; templates">'.$tag.'</a></strong> ');
 	    } else {
-		$tags_new_string = getListOfTags($tags_active) . '+' . $tag;
+		$tags_new_string = getListOfTags($tags_active) . ',' . $tag;
 		echo('<a href="'.$_SERVER['PHP_SELF'].'?step=1&tags='.$tags_new_string.'&templates_layout='.$templates_layout.'&templates_available='.$templates_available.'" title="Display &quot;'.$tag.'&quot; templates">'.$tag.'</a> ');
 	    }
 	    if ($key+1 < count($tags)) {
@@ -584,7 +584,7 @@ function displayForm() {
  * @param unknown $placement
  */
 function placeImage($pdf, $imgfile, $bbxloc, $bbyloc, $bbwidth, $bbheight, $placement) {
-	// $placement not yet used, defaults to centered
+	// XXXX Needs handling for spaces/+ characters in uploaded filenames
 	// Intended options: center (default), fill, ul, ur, ll, lr
 	global $cache_path;
 
@@ -683,13 +683,15 @@ function displayDownloadBox() {
 function getAllTags() {
         $tags = Array();
 
-        $sql = 'SELECT DISTINCT `tags` FROM `templates` WHERE `tags` != "" AND `active` = 1'; // DISTINCT slightly limits the redundant work that has to be done later
+        $sql = 'SELECT DISTINCT `tags` FROM `templates` WHERE `tags` != "" AND `active` = 1'; // XXXX DISTINCT slightly limits the redundant work that has to be done later
         $results = mysql_query($sql);
 
         // Loop through results and add new terms to the array 
         while ($template_subset = mysql_fetch_assoc($results)) {
-                $subset = explode(' ', $template_subset['tags']);
+                $subset = explode(',', $template_subset['tags']);
                 foreach ($subset as $tag) {
+                		$tag = trim($tag);
+                		$tag = strtoupper(substr($tag, 0, 1)) . strtolower(substr($tag, 1)); // XXXX Is there a sentence-case/title-case function? (Currently offline, can't check.)
                         if (array_search($tag, $tags) === false) {
                                 $tags[] = $tag;
                         }
@@ -703,7 +705,11 @@ function getAllTags() {
 function getActiveTags() {
 	$tags_active = Array();
 	if (isset($_GET['tags']) && $_GET['tags'] != '') {
-		$tags_active = explode(' ', trim($_GET['tags']));
+		$tags_active = explode(',', trim($_GET['tags']));
+		foreach ($tags_active as $tag) {
+        	$tag = trim($tag);
+        	//$tag = strtoupper(substr($tag, 0, 1)) . strtolower(substr($tag, 1)); // XXXX Is there a sentence-case/title-case function? (Currently offline, can't check.)
+		}
 	}
 	
 	return($tags_active);
@@ -713,7 +719,7 @@ function getListOfTags($tags_array, $tag_to_remove = null) {
 	$tags_string = '';
 	foreach ($tags_array as $tag) {
 		if ($tag != $tag_to_remove && $tag != '') {
-			$tags_string .= '+' . $tag;
+			$tags_string .= ',' . $tag;
 		}
 	}
 	return($tags_string);
