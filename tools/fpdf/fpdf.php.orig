@@ -68,8 +68,6 @@ var $creator;            // creator
 var $AliasNbPages;       // alias for total number of pages
 var $PDFVersion;         // PDF version number
 
-var $FontSpacingPt;      // From http://stackoverflow.com/questions/11126354/fpdf-letter-spacing
-
 /*******************************************************************************
 *                                                                              *
 *                               Public methods                                 *
@@ -1793,21 +1791,6 @@ function _enddoc()
 	$this->_out('%%EOF');
 	$this->state = 3;
 }
-
-
-// From http://stackoverflow.com/questions/11126354/fpdf-letter-spacing
-function SetFontSpacing( $size ) {
-   if ( $this->FontSpacingPt == $size ) return;
-
-   $this->FontSpacingPt = $size;
-   $this->FontSpacing = $size / $this->k;
-
-   if ( $this->page > 0 )
-   $this->_out( sprintf( 'BT %.3f Tc ET', $size ) );
-}
-
-
-
 // End of class
 }
 

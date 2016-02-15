@@ -331,6 +331,11 @@ function validateFieldPostData($fieldID) {
 	} else { $flag++; $msg.='Error with leading<br />'; }
 
 
+	if (isset($_POST[$prefix.'kerning']) && is_numeric($_POST[$prefix.'kerning'])) {
+		$sql .= ', `kerning` = '.$_POST[$prefix.'kerning'];
+	} else { $flag++; $msg.='Error with kerning<br />'; }
+
+
 	if (isset($_POST[$prefix.'font_id'])) {
 		$sql .= ', `font_id` = '.$_POST[$prefix.'font_id'];
 	} else { $flag++; $msg.='Error with font_id<br />'; }
@@ -489,6 +494,8 @@ function displayFieldEditor($field) {
 	echo '<div id="field'.$field['id'].'font" style="display:none;">';
 
 	echo 'Font size:<br /><input class="short" type="text" name="field-'.$field['id'].'-font_size" value="'.$field['font_size'].'" /><br />';
+
+	echo 'Kerning:<br /><input class="short" type="text" name="field-'.$field['id'].'-kerning" value="'.$field['kerning'].'" /><br />';
 
 	echo 'Leading:<br /><input class="short" type="text" name="field-'.$field['id'].'-leading" value="'.$field['leading'].'" /><br />';
 	// FONT SELECTOR
