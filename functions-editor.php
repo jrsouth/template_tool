@@ -67,6 +67,11 @@ function validateTemplatePostData($id) {
 		$sql .= ', `name` = "'.$template['name'].'"';
 	} else { $flag++; $msg.='Error with name<br />'; }
 
+	if (isset($_POST[$prefix.'tags']) && $_POST[$prefix.'tags'] != '') {
+		$template['tags'] = $_POST[$prefix.'tags'];
+		$sql .= ', `tags` = "'.$template['tags'].'"';
+	} else { $flag++; $msg.='Error with tags<br />'; }
+
 
 	if (isset($_POST[$prefix.'active'])) {
 		$template['active'] = ($_POST[$prefix.'active']?'1':'0');
@@ -84,6 +89,7 @@ function validateTemplatePostData($id) {
 		$template['bleed'] = $_POST[$prefix.'bleed'];
 		$sql .= ', bleed = '.$template['bleed'];
 	} else { $flag++; $msg.='Error with bleed<br />'; }
+
 
 
 
@@ -143,7 +149,8 @@ function displayTemplateEditor($id) {
 			'bleed' => 0,
 			'active' => 1,
 			'permissions' => 'NULL',
-			'owner' => 'NULL'
+			'owner' => 'NULL',
+			'tags' => ''
 		);
 	}
 	/* REDUNDANT AS WILL ALREADY BE SET
@@ -210,8 +217,8 @@ $template = getTemplate($id);
 
 
 	echo '<div id="template-basic">';
-	//echo('Template Name:<br /><input type="text" name="template-'.$id.'-name" value="'.(isset($_POST['template-'.$id.'-name'])?$_POST['template-'.$id.'-name']:'').'" /></br />');
-	echo 'Template Name:<br /><input type="text" name="template-'.$id.'-name" value="'.$template['name'].'" /></br />';
+	//echo('Template Name:<br /><input type="text" name="template-'.$id.'-name" value="'.(isset($_POST['template-'.$id.'-name'])?$_POST['template-'.$id.'-name']:'').'" /><br />');
+	echo 'Template Name:<br /><input type="text" name="template-'.$id.'-name" value="'.$template['name'].'" /><br />';
 
 	echo 'Base PDF File:<br />';
 
@@ -231,8 +238,9 @@ $template = getTemplate($id);
 	}
 
 
-	echo 'Number of pages: <input class="short" type="text" name="template-'.$id.'-pagecount" value="'.$template['pagecount'].'" /></br />';
-	echo 'Bleed: <input class="short" type="text" name="template-'.$id.'-bleed" value="'.$template['bleed'].'" /></br />';
+	echo 'Template tags (comma-separated list):<br /><input type="text" name="template-'.$id.'-tags" value="'.$template['tags'].'" /><br />';
+	echo 'Number of pages: <input class="short" type="text" name="template-'.$id.'-pagecount" value="'.$template['pagecount'].'" /><br />';
+	echo 'Bleed: <input class="short" type="text" name="template-'.$id.'-bleed" value="'.$template['bleed'].'" /><br />';
 
 	echo '</div>';
 
@@ -240,7 +248,7 @@ $template = getTemplate($id);
 
 	echo '<div id="template-access" style="display:none;">';
 
-	echo 'Is the template active?:<br /><input type="radio" name="template-'.$id.'-active" value="1"'.($template['active']?' checked="checked"':'').'>Active</input><br /><input type="radio" name="template-'.$id.'-active" value="0"'.(!$template['active']?' checked="checked"':'').'>Inactive</input></br />';
+	echo 'Is the template active?:<br /><input type="radio" name="template-'.$id.'-active" value="1"'.($template['active']?' checked="checked"':'').'>Active</input><br /><input type="radio" name="template-'.$id.'-active" value="0"'.(!$template['active']?' checked="checked"':'').'>Inactive</input><br />';
 
 	echo '</div>';
 
@@ -380,7 +388,7 @@ function validateImagePostData($imageID) {
 		$sql .= ', `name` = "'.trim($_POST[$prefix.'name']).'"';
 	} else { $flag++; $msg.='Error with name<br />'; }
 	
-		if (isset($_POST[$prefix.'x_position']) && is_numeric($_POST[$prefix.'x_position'])) {
+        if (isset($_POST[$prefix.'x_position']) && is_numeric($_POST[$prefix.'x_position'])) {
 		$sql .= ', `x_position` = '. $_POST[$prefix.'x_position'];
 	} else { $flag++; $msg.='Error with x_position<br />'; }
 
@@ -407,6 +415,11 @@ function validateImagePostData($imageID) {
 	if (isset($_POST[$prefix.'page'])) {
 		$sql .= ', `page` = '.$_POST[$prefix.'page'];
 	} else { $flag++; $msg.='Error with page<br />'; }
+
+
+	if (isset($_POST[$prefix.'tags'])) {
+		$sql .= ', `tags` = "'.$_POST[$prefix.'tags'] . '"';
+	} else { $flag++; $msg.='Error with tags<br />'; }
 
 	return array('flag' => $flag, 'msg' => $msg, 'sql' => $sql);
 
@@ -450,7 +463,7 @@ function displayFieldEditor($field) {
 
 	echo '<div id="field'.$field['id'].'basic">';
 
-	echo 'Field Name:<br /><input type="text" name="field-'.$field['id'].'-name" value="'.$field['name'].'" /></br />';
+	echo 'Field Name:<br /><input type="text" name="field-'.$field['id'].'-name" value="'.$field['name'].'" /><br />';
 
 
 	echo 'Default Text:<br /><textarea rows="4" name="field-'.$field['id'].'-default_text">'.$field['default_text'].'</textarea><br />';
@@ -555,7 +568,7 @@ function displayImageEditor($image) {
 
 	echo '<div id="image'.$image['id'].'basic">';
 
-	echo 'Image Name:<br /><input type="text" name="image-'.$image['id'].'-name" value="'.$image['name'].'" /></br />';
+	echo 'Image Name:<br /><input type="text" name="image-'.$image['id'].'-name" value="'.$image['name'].'" /><br />';
 
 
 	echo 'Default Image:<br />';
