@@ -341,8 +341,10 @@ function validateFieldPostData($fieldID) {
 
 	if (isset($_POST[$prefix.'kerning']) && is_numeric($_POST[$prefix.'kerning'])) {
 		$sql .= ', `kerning` = '.$_POST[$prefix.'kerning'];
-	} else { $flag++; $msg.='Error with kerning<br />'; }
-
+	} else { 
+            $sql .= ', `kerning` = 0';
+            $_POST[$prefix.'kerning'] = 0;
+        }
 
 	if (isset($_POST[$prefix.'font_id'])) {
 		$sql .= ', `font_id` = '.$_POST[$prefix.'font_id'];
