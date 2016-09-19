@@ -100,7 +100,6 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 	$results = mysqli_query(DB::$conn,$sql);
 	if (mysqli_num_rows($results) == 1) {
 		$template = mysqli_fetch_assoc($results);
-		error_log("Template data returned!");
 	}
 }
 
