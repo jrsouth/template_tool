@@ -17,7 +17,7 @@ class DB {
     public static $conn;
     private function __construct(){} //no instantiation
 }
-DB::$conn = new mysqli($db_server, $db_user, $db_password, $db_database);
+DB::$conn = new mysqli($db_server, $db_user, $db_password, $db_database,$db_port);
 
 
 
