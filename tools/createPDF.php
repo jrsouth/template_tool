@@ -275,7 +275,7 @@ if (isset($_GET['view'])) {  // Output a JPEG preview/thumbnail
 	displayPDF($pdffile, $_GET['view'], $template['id'], (isset($_GET['page'])?$_GET['page']:'1'));
 
 } else { // Let the browser handle the PDF
-        header('Content-Disposition: inline; filename="' . (isset($_POST['download_name'])?$_POST['download_name']:$template['name'] . '.pdf"');
+        header('Content-Disposition: inline; filename="' . (isset($_POST['download_name'])?$_POST['download_name']:$template['name']) . '.pdf"');
 	$pdf->Output($template['name'].'.pdf', 'I');
 }
 
