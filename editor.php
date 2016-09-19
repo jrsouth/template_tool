@@ -110,8 +110,8 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 		' . $template['height'] . ',
 		' . $template['width'] . '
 		)'; 
-	mysql_query($sql);
-	$new_template_id = mysql_insert_id();
+	mysqli_query(DB::$conn,$sql);
+	$new_template_id = mysqli_insert_id(DB::$conn);
 
 
         // Add fields to new template
@@ -138,7 +138,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 		' . $field['page'] . '
 		)';
 
-	mysql_query($sql);
+	mysqli_query(DB::$conn,$sql);
 
 	}
 
@@ -158,7 +158,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 		' . $image['page'] . '
 		)';
 
-	mysql_query($sql);
+	mysqli_query(DB::$conn,$sql);
 
 	}
 
@@ -178,7 +178,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
             // DELETE FIELD
             $delete_sql = 'DELETE FROM `fields` WHERE `id` = '.$_GET['removeField'];
-            if (mysql_query($delete_sql)) {
+            if (mysqli_query(DB::$conn,$delete_sql)) {
                 echo 'FIELD DELETED!';
             } else {
                 echo 'AN ERROR HAPPENED :(';
@@ -205,7 +205,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
             // DELETE IMAGE
             $delete_sql = 'DELETE FROM `images` WHERE `id` = '.$_GET['removeImage'];
-            if (mysql_query($delete_sql)) {
+            if (mysqli_query(DB::$conn,$delete_sql)) {
                 echo 'IMAGE DELETED!';
             } else {
                 echo 'AN ERROR HAPPENED :(';
@@ -247,7 +247,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
             $insert_sql = 'INSERT INTO `fields` SET `id` = NULL, ' . $sql;
 
-            if (!$flag && mysql_query($insert_sql)) {
+            if (!$flag && mysqli_query(DB::$conn,$insert_sql)) {
                 echo 'FIELD INSERTED!<br />(Values are kept below in case you need to enter a similar new field)';
                 // Update $fields to reflect new insertion
                 $fields = getTemplateFields($_POST['template_id']);
@@ -268,7 +268,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
                 $update_sql = 'UPDATE `fields` SET ' . $sql . ' WHERE `id` = ' . $field['id'];
 
-                if ($flag || !mysql_query($update_sql)) {
+                if ($flag || !mysqli_query(DB::$conn,$update_sql)) {
                     debug('<p><strong>AN ERROR OCCURRED :( </strong></p><p>FLAG = '.$flag.'</p><p>$msg: <br />'.$msg.'</p><p>SQL statement:<br />'.$update_sql.'</p>');
                     $update_error = true;
                 }
@@ -302,13 +302,13 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
             $insert_sql = 'INSERT INTO `images` SET `id` = NULL, ' . $sql;
 
-            if (!$flag && mysql_query($insert_sql)) {
+            if (!$flag && mysqli_query(DB::$conn,$insert_sql)) {
                 debug('IMAGE INSERTED!');
                 // Update $images to reflect new insertion
                 $images = getTemplateImages($_POST['template_id']);
                 
                 // Upload default image
-                $new_image_id = mysql_insert_id();
+                $new_image_id = mysqli_insert_id(DB::$conn);
                 if (isset($_FILES['image-new-default-image'])) {
                 // Image uploaded
                 $upload_tmp = $_FILES['image-new-default-image']['tmp_name'];
@@ -345,7 +345,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
                 $update_sql = 'UPDATE `images` SET ' . $sql . ' WHERE `id` = ' . $image['id'];
 
-                if ($flag || !mysql_query($update_sql)) {
+                if ($flag || !mysqli_query(DB::$conn,$update_sql)) {
                     debug('<p><strong>AN ERROR OCCURRED :( </strong></p><p>FLAG = '.$flag.'</p><p>$msg: <br />'.$msg.'</p><p>SQL statement:<br />'.$update_sql.'</p>');
                     $update_error = true;
                 }

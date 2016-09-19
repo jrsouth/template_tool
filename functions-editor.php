@@ -168,11 +168,11 @@ $template = getTemplate($id);
 
 		debug($sql);
 
-		if (!$flag && mysql_query($sql)) {
+		if (!$flag && mysqli_query(DB::$conn,$sql)) {
 			echo 'TEMPLATE INSERTED/UPDATED!<br />';
 			// Set $id if not already set (i.e. if it's a creation, not an edit)
                         if ($id == 'new') {
-                          $id = mysql_insert_id();
+                          $id = mysqli_insert_id(DB::$conn);
                         }
 
                         // Delete any existing thumbnails and previews for the template
@@ -626,9 +626,9 @@ function displayImageEditor($image) {
 function getAllTemplates() {
 	global $db_connection;
 	$sql = 'SELECT * FROM `templates` ORDER BY `name`';
-	$results = mysql_query($sql);
+	$results = mysqli_query(DB::$conn,$sql);
 	$templates = array();
-	while ($result = mysql_fetch_array($results)) {
+	while ($result = mysqli_fetch_array($results)) {
 		$templates[] = $result;
 	}
 	return $templates;
@@ -644,8 +644,8 @@ function getAllTemplates() {
 function getTemplate($template_id) {
 	global $db_connection;
 	$sql = 'SELECT * FROM `templates` WHERE `id` = '.$template_id;
-	$results = mysql_query($sql);
-	$template = mysql_fetch_array($results);
+	$results = mysqli_query(DB::$conn,$sql);
+	$template = mysqli_fetch_array($results);
 	return $template;
 }
 
@@ -680,9 +680,9 @@ function getAllImageAlignments() {
 function getAllColours() {
 	global $db_connection;
 	$sql = 'SELECT * FROM `colours` ORDER BY `name`';
-	$results = mysql_query($sql);
+	$results = mysqli_query(DB::$conn,$sql);
 	$colours = array();
-	while ($result = mysql_fetch_array($results)) {
+	while ($result = mysqli_fetch_array($results)) {
 		$colours[] = $result;
 	}
 	return $colours;
@@ -697,9 +697,9 @@ function getAllColours() {
 function getAllFonts() {
 	global $db_connection;
 	$sql = 'SELECT * FROM `fonts` ORDER BY `display_name`';
-	$results = mysql_query($sql);
+	$results = mysqli_query(DB::$conn,$sql);
 	$fonts = array();
-	while ($result = mysql_fetch_array($results)) {
+	while ($result = mysqli_fetch_array($results)) {
 		$fonts[] = $result;
 	}
 	return $fonts;
@@ -715,9 +715,9 @@ function getAllFonts() {
 function getTemplateFields($template_id) {
 	global $db_connection;
 	$sql = 'SELECT * FROM `fields` WHERE `template_id` = '.$template_id.' ORDER BY `name`';
-	$results = mysql_query($sql);
+	$results = mysqli_query(DB::$conn,$sql);
 	$fields = array();
-	while ($result = mysql_fetch_array($results)) {
+	while ($result = mysqli_fetch_array($results)) {
 		$fields[] = $result;
 	}
 	return $fields;
@@ -733,9 +733,9 @@ function getTemplateFields($template_id) {
 function getTemplateImages($template_id) {
 	global $db_connection;
 	$sql = 'SELECT * FROM `images` WHERE `template_id` = '.$template_id.' ORDER BY `name`';
-	$results = mysql_query($sql);
+	$results = mysqli_query(DB::$conn,$sql);
 	$images = array();
-	while ($result = mysql_fetch_array($results)) {
+	while ($result = mysqli_fetch_array($results)) {
 		$images[] = $result;
 	}
 	return $images;
@@ -751,8 +751,8 @@ function getTemplateImages($template_id) {
 function getField($field_id) {
 	global $db_connection;
 	$sql = 'SELECT * FROM `fields` WHERE `id` = '.$field_id;
-	$results = mysql_query($sql);
-	$field = mysql_fetch_array($results);
+	$results = mysqli_query(DB::$conn,$sql);
+	$field = mysqli_fetch_array($results);
 	return $field;
 }
 /**
@@ -764,8 +764,8 @@ function getField($field_id) {
 function getImage($image_id) {
 	global $db_connection;
 	$sql = 'SELECT * FROM `images` WHERE `id` = '.$image_id;
-	$results = mysql_query($sql);
-	$image = mysql_fetch_array($results);
+	$results = mysqli_query(DB::$conn,$sql);
+	$image = mysqli_fetch_array($results);
 	return $image;
 }
 

@@ -10,8 +10,8 @@
  require('settings-core.php');
 
  // Create database connection
-$db_connection = mysql_connect($db_server, $db_user, $db_password) or die(mysql_error());
-mysql_select_db($db_database) or die(mysql_error());
+$db_connection = mysqli_connect($db_server, $db_user, $db_password) or die(mysqli_error());
+mysqli_select_db($db_database) or die(mysqli_error());
 
 /* ---------------------------------------------------------- /*
 Various cleanup and tidy up scripts
@@ -62,8 +62,8 @@ if (isset($_GET['action'])) {
 		$success = true;
 		
 		$sql = "SELECT * FROM `templates` ORDER BY `id`";
-		$results = mysql_query($sql);
-		while ($template = mysql_fetch_assoc($results)) {
+		$results = mysqli_query(DB::$conn,$sql);
+		while ($template = mysqli_fetch_assoc($results)) {
 		  // Code adapted from AndrewR found at http://stackoverflow.com/questions/9622357/php-get-height-and-width-in-pdf-file-proprieties
 		  $output = shell_exec('pdfinfo -box "storage/templates/' . $template['pdf_file'] . '"');
 		  
@@ -78,7 +78,7 @@ if (isset($_GET['action'])) {
 		  
 		  
 		  $sql = 'UPDATE `templates` SET `pagecount` = '.$pagecount.', `width` = '.$width.', `height` = '.$height.' WHERE `id` = '.$template['id'];
-		  $result = mysql_query($sql);
+		  $result = mysqli_query(DB::$conn,$sql);
 		  $message = $message . '<pre>'.$sql.'<br /> &gt;&gt; <strong>'.($result?'SUCCESS':'FAILED').'</strong></pre>';
 		}
 		break;

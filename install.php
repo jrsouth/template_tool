@@ -76,8 +76,8 @@ echo '<?xml version="1.0" encoding="utf-8" ?>';
 
 // Check for existing installation
 
-$result = mysql_query('SELECT COUNT(id) FROM colours');
-if (mysql_error()) {
+$result = mysqli_query(DB::$conn,'SELECT COUNT(id) FROM colours');
+if (mysqli_error()) {
   $db_exists = 0;
 } else {
   $db_exists = 1;
@@ -111,7 +111,7 @@ if (isset($_POST['confirm']) && (strtolower($_POST['confirm']) === 'yes')) {
 		if (substr(trim($line), -1, 1) == ';')
 		{
 		    // Perform the query
-		    mysql_query($templine) or print('Error performing query \'<strong>' . $templine . '\': ' . mysql_error() . '<br /><br />');
+		    mysqli_query(DB::$conn,$templine) or print('Error performing query \'<strong>' . $templine . '\': ' . mysqli_error() . '<br /><br />');
 		    // Reset temp variable to empty
 		    $templine = '';
 		}

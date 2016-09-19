@@ -169,12 +169,12 @@ if(count($tags) > 0) {
 	}
 	$sql = 'SELECT * FROM `templates` WHERE '. $where_clause .' ORDER BY `name`';
 
-	$results = mysql_query($sql);
+	$results = mysqli_query(DB::$conn,$sql);
 
-	if (mysql_num_rows($results)) {
+	if (mysqli_num_rows($results)) {
 	    echo('<div class="template-display-'.$templates_layout.'">');
 	    $odd_row = true;
-	    while ($template = mysql_fetch_assoc($results)) {
+	    while ($template = mysqli_fetch_assoc($results)) {
 		    echo '<div'.($odd_row?' class="odd" ':'').'>';
 		    echo '<p>';
 		    echo '<a href="index.php?template_id='.$template['id'].'&reset=1&step=2">'.$template['name'].'</a>';
@@ -206,16 +206,16 @@ function displayCurrentPreview() {
 	$params = '&template_id='.$template['id'];
 
 	$sql = 'SELECT * FROM images WHERE template_id = '. $template['id'];
-	$results = mysql_query($sql);
-	while ($image = mysql_fetch_assoc($results)) {
+	$results = mysqli_query(DB::$conn,$sql);
+	while ($image = mysqli_fetch_assoc($results)) {
 		if (isset($image_locations['img'.$image['id']])) {
 			$params .= '&img'.$image['id'].'='.$image_locations['img'.$image['id']];
 		}
 	}
 
 	$sql = 'SELECT * FROM fields WHERE template_id = '. $template['id'];
-	$results = mysql_query($sql);
-	while ($field = mysql_fetch_assoc($results)) {
+	$results = mysqli_query(DB::$conn,$sql);
+	while ($field = mysqli_fetch_assoc($results)) {
 		if (isset($_POST['f'.$field['id']])) {
 			// Dodgy replacement of newlines with url encoded newlines
 			$params .= '&f'.$field['id'].'='.urlencode($_POST['f'.$field['id']]);
@@ -250,16 +250,16 @@ function processTemplatePOSTData() {
 	$params = '&template_id='.$template['id'];
 
 	$sql = 'SELECT * FROM images WHERE template_id = '. $template['id'];
-	$results = mysql_query($sql);
-	while ($image = mysql_fetch_assoc($results)) {
+	$results = mysqli_query(DB::$conn,$sql);
+	while ($image = mysqli_fetch_assoc($results)) {
 		if (isset($image_locations['img'.$image['id']])) {
 			$params .= '&img'.$image['id'].'='.$image_locations['img'.$image['id']];
 		}
 	}
 
 	$sql = 'SELECT * FROM fields WHERE template_id = '. $template['id'];
-	$results = mysql_query($sql);
-	while ($field = mysql_fetch_assoc($results)) {
+	$results = mysqli_query(DB::$conn,$sql);
+	while ($field = mysqli_fetch_assoc($results)) {
 		if (isset($_POST['f'.$field['id']])) {
 			// Dodgy replacement of newlines with url encoded newlines
 			$params .= '&f'.$field['id'].'='.urlencode($_POST['f'.$field['id']]);
@@ -276,11 +276,11 @@ function updateWorkingTemplateData($params) {
 	// Database storage rather than URL query string
 	if ($working_template_id > 0) {
 		$sql = 'UPDATE `working_templates` SET `data` = "'.$params.'" WHERE `id` = ' . $working_template_id;
-		mysql_query($sql);
+		mysqli_query(DB::$conn,$sql);
 	} else {
 		$sql = 'INSERT INTO `working_templates` SET `template_id` = '.$template['id'].', `data` = "'.$params.'"';
-		mysql_query($sql);
-		$working_template_id = mysql_insert_id();
+		mysqli_query(DB::$conn,$sql);
+		$working_template_id = mysqli_insert_id(DB::$conn);
 	}
 }
 
@@ -371,7 +371,7 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 
 function getTemplateName($template_id) {
 	$sql = 'SELECT `name` FROM `templates` WHERE `id` = ' . $template_id;
-	$result = mysql_fetch_assoc(mysql_query($sql));
+	$result = mysqli_fetch_assoc(mysqli_query(DB::$conn,$sql));
 echo('Template ID: ' . $template_id . ' || Name = ' . $result['name']);
 	return($result['name']);
 }
@@ -392,17 +392,17 @@ function get_fields($template_id, $pageno = 0) {
 
 	// Get base parents (i.e. no parent of their own) and drop into an array
 	$sql = 'SELECT * FROM `fields` WHERE `template_id` = '. $template_id . $page_restriction . ' AND `parent` = 0 ORDER BY `page`, `y_position`, `name`';
-	$results = mysql_query($sql);
+	$results = mysqli_query(DB::$conn,$sql);
 	$fields = array();
-	while ($field = mysql_fetch_assoc($results)) {
+	while ($field = mysqli_fetch_assoc($results)) {
 		$fields[] = $field;
 	}
 
 	// Get children (i.e. with a parent of their own)
 	$sql = 'SELECT * FROM `fields` WHERE `template_id` = '. $template_id . $page_restriction . ' AND `parent` > 0 ORDER BY `parent`';
-	$results = mysql_query($sql);
+	$results = mysqli_query(DB::$conn,$sql);
 	$children = array();
-	while ($field = mysql_fetch_assoc($results)) {
+	while ($field = mysqli_fetch_assoc($results)) {
 		$children[] = $field;
 	}
 
@@ -448,9 +448,9 @@ function get_images($template_id, $pageno = 0) {
 	}
 	// Get sorted images
 	$sql = 'SELECT * FROM `images` WHERE `template_id` = '. $template_id . $page_restriction . ' ORDER BY `page`, `y_position`';
-	$results = mysql_query($sql);
+	$results = mysqli_query(DB::$conn,$sql);
 	$images = array();
-	while ($image = mysql_fetch_assoc($results)) {
+	while ($image = mysqli_fetch_assoc($results)) {
 		$images[] = $image;
 	}
 	return $images;
@@ -684,10 +684,10 @@ function getAllTags() {
         $tags = Array();
 
         $sql = 'SELECT DISTINCT `tags` FROM `templates` WHERE `tags` != "" AND `active` = 1'; // XXXX DISTINCT slightly limits the redundant work that has to be done later
-        $results = mysql_query($sql);
+        $results = mysqli_query(DB::$conn,$sql);
 
         // Loop through results and add new terms to the array 
-        while ($template_subset = mysql_fetch_assoc($results)) {
+        while ($template_subset = mysqli_fetch_assoc($results)) {
                 $subset = explode(',', $template_subset['tags']);
                 foreach ($subset as $tag) {
                 		$tag = trim($tag);

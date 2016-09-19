@@ -11,9 +11,13 @@
 
 require 'settings-core.php';
 
-// Create database connection
-$db_connection = mysql_connect($db_server, $db_user, $db_password) or die(mysql_error());
-mysql_select_db($db_database) or die(mysql_error());
+// Make DB superglobal (sort of).
+// Use DB::$conn to get the mysqli connection object
+class DB {
+    public static $conn;
+    private function __construct(){} //no instantiation
+}
+DB::$conn = new mysqli($db_server, $db_user, $db_password, $db_database);
 
 
 
@@ -60,12 +64,12 @@ if (isset($_POST['working_template_id'])) {
 
 if ($working_template_id) {
 	$sql = 'SELECT * FROM `working_templates` WHERE `id` = '.$working_template_id;
-	$result = mysql_fetch_assoc(mysql_query($sql));
+	$result = mysqli_fetch_assoc(mysqli_query(DB::$conn,$sql));
 	$template['id'] = $result['template_id'];
 	$sql = 'SELECT * FROM templates WHERE id = ' . $template['id'];
-	$results = mysql_query($sql);
-	if (mysql_num_rows($results) == 1) {
-		$template = mysql_fetch_assoc($results);
+	$results = mysqli_query(DB::$conn,$sql);
+	if (mysqli_num_rows($results) == 1) {
+		$template = mysqli_fetch_assoc($results);
 	}
 
 }
@@ -93,10 +97,16 @@ if (isset($_FILES) && !isset($_POST['from-editor'])) { // Process any user input
 
 if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 	$sql = 'SELECT * FROM templates WHERE id = ' . $_POST['template_id'];
-	$results = mysql_query($sql);
-	if (mysql_num_rows($results) == 1) {
-		$template = mysql_fetch_assoc($results);
+	$results = mysqli_query(DB::$conn,$sql);
+	if (mysqli_num_rows($results) == 1) {
+		$template = mysqli_fetch_assoc($results);
+		error_log("Template data returned!");
 	}
+}
+
+
+if(!isset($template['id']) && isset($_POST['template_id'])) {
+    $template['id'] = $_POST['template_id'];
 }
 
 

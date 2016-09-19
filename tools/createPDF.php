@@ -1,4 +1,8 @@
 <?php
+
+
+
+
 /**
  * tools/createPDF.php
  *
@@ -6,11 +10,21 @@
  */
 
 // Set up environment
-require '../functions.php';
-require '../process.php';
+
+
+
+
+require_once('../functions.php');
+require_once('../process.php');
+
+
+
 
 $thumbnail_location = $cache_path . 'thumbnails/template_'.$template['id'].'.png';
 $preview_location = $cache_path . 'default/template_'.$template['id'].'_p' . (isset($_GET['page'])?$_GET['page']:'1') . '.png';
+
+
+
 
 
 // Quick check for existing thumbnail or default preview - serve if available
@@ -30,16 +44,17 @@ $working_template = array();
 if ($working_template_id) {
 
 	$sql = 'SELECT * FROM `working_templates` WHERE `id` = '.$working_template_id;
-	if ($result = mysql_query($sql)) {
+	if ($result = mysqli_query(DB::$conn,$sql)) {
 
-		$result = mysql_fetch_assoc($result);
+		$result = mysqli_fetch_assoc($result);
 
 		mb_parse_str($result['data'], $working_template);
 
 	}
-} else if (isset($_POST['display']) && $_POST['display'] == 'immediate') {
+} else if (isset($_POST['template_id'])) {
 	mb_parse_str(processTemplatePOSTData(), $working_template);
 }
+
 
 
 // String output renders in the browser as a PDF page, without needing to write a file to disk
@@ -47,6 +62,9 @@ $stringOutput = false;
 if (isset($_GET['stringoutput']) && $_GET['stringoutput'] == 1) {
 	$stringOutput = true;
 }
+
+
+
 
 
 if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/'.$template['pdf_file'])) {
@@ -141,11 +159,11 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 
 			// Get font details
 			$sql = 'SELECT * FROM `fonts` WHERE `id` = ' . $field['font_id'];
-			$font = mysql_fetch_assoc(mysql_query($sql));
+			$font = mysqli_fetch_assoc(mysqli_query(DB::$conn,$sql));
 
 			// Get colour details
 			$sql = 'SELECT * FROM `colours` WHERE `id` = ' . $field['colour_id'] ;
-			$colour = mysql_fetch_assoc(mysql_query($sql));
+			$colour = mysqli_fetch_assoc(mysqli_query(DB::$conn,$sql));
 			// Set colour RGB value (Strip alpha value)
 			$colourValue = array(
 				'R' => hexdec(substr($colour['RGBA'], 0, 2)),
@@ -244,6 +262,9 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 
 }
 
+
+
+
 if (isset($_GET['view'])) {  // Output a JPEG preview/thumbnail
 
 	$pdffile = $cache_path . 'pdf/'.uniqid('LLR').'.pdf';
@@ -257,3 +278,6 @@ if (isset($_GET['view'])) {  // Output a JPEG preview/thumbnail
 
 	$pdf->Output($template['name'].'.pdf', 'I');
 }
+
+
+
