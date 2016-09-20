@@ -53,6 +53,7 @@ CREATE TABLE `fields` (
   `leading` double NOT NULL DEFAULT '0',
   `parent` int(11) DEFAULT NULL,
   `page` int(11) DEFAULT '1',
+  `kerning` double DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `template_id` (`template_id`),
   KEY `font_id` (`font_id`)
@@ -64,8 +65,8 @@ CREATE TABLE `fields` (
 
 LOCK TABLES `fields` WRITE;
 INSERT INTO `fields` VALUES
-(NULL,1,'normal','Title','Template title',1,50,6,18,8,50,70,110,20,0,1),
-(NULL,1,'normal','Main text','This is where your text goes.',0,2048,6,12,1,50,80,110,15,0,1);
+(NULL,1,'normal','Title','Template title',1,50,6,18,8,50,70,110,20,0,1,0),
+(NULL,1,'normal','Main text','This is where your text goes.',0,2048,6,12,1,50,80,110,15,0,1,0);
 UNLOCK TABLES;
 
 --

@@ -4,3 +4,6 @@ RewriteEngine on
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 
+
+RewriteRule create/ tools/createPDF.php [NC,L]
+
