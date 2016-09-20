@@ -418,11 +418,6 @@ function validateImagePostData($imageID) {
 		$sql .= ', `page` = '.$_POST[$prefix.'page'];
 	} else { $flag++; $msg.='Error with page<br />'; }
 
-
-	if (isset($_POST[$prefix.'tags'])) {
-		$sql .= ', `tags` = "'.$_POST[$prefix.'tags'] . '"';
-	} else { $flag++; $msg.='Error with tags<br />'; }
-
 	return array('flag' => $flag, 'msg' => $msg, 'sql' => $sql);
 
 }

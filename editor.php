@@ -329,7 +329,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
                 }
                 
             } else {
-                debug('<p><strong>AN ERROR OCCURRED :( </strong></p><p>FLAG = '.$flag.'</p><p>$msg: <br />'.$msg.'</p><p>SQL statement:<br />'.$update_sql.'</p>');
+                debug('<p><strong>AN ERROR OCCURRED INSERTING THE IMAGE :( </strong></p><p>FLAG = '.$flag.'</p><p>$msg: <br />'.$msg.'</p><p>SQL statement:<br />'.$insert_sql.'</p><p>SQL Error: '.mysqli_error(DB::$conn).'</p>');
             }
 
         } else { // If it's an update to existing image(s)
