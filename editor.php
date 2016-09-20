@@ -115,7 +115,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
 
         // Add fields to new template
-	// XXX Needs to account for parent-child relationships between fields
+	// XXXX TODO Still Needs to account for parent-child relationships between fields
 
 	foreach ($fields as $field) {
 
@@ -135,7 +135,8 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 		' . $field['wrap_width'] . ',
 		' . $field['leading'] . ',
 		' . $field['parent'] . ',
-		' . $field['page'] . '
+		' . $field['page'] . ',
+		' . $field['kerning'] . '
 		)';
 
 	mysqli_query(DB::$conn,$sql);

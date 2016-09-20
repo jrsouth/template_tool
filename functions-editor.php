@@ -153,10 +153,6 @@ function displayTemplateEditor($id) {
 			'tags' => ''
 		);
 	}
-	/* REDUNDANT AS WILL ALREADY BE SET
-else { // Get template details from database
-$template = getTemplate($id);
-} */
 
 	if (isset($_POST['savetemplate'])) { // If save template button has been pressed
 
@@ -174,12 +170,6 @@ $template = getTemplate($id);
                         if ($id == 'new') {
                           $id = mysqli_insert_id(DB::$conn);
                         }
-
-                        // Delete any existing thumbnails and previews for the template
-                        // Now done by main editor.php page on any submission to
-                        // avoid duplication of effort.
-                        //
-                        // clearTemplateCache($id);
 
 			// Update $template to reflect new insertion
 			$template = getTemplate($id);
