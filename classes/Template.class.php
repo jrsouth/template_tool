@@ -91,7 +91,7 @@ private function getResetLink() {
 }
 
 private function getThumbnailLocation() {
-  return '../tools/createPDF.php?view=thumbnail&template_id='.$this->getID();
+  return '../tools/create.php?view=thumbnail&template_id='.$this->getID();
 }
 
 

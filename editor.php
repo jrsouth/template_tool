@@ -392,7 +392,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
 
 
-    echo '<div style="float:left;"><img class="thumb" src="tools/createPDF.php?view=thumbnail&template_id='.$template['id'].'" /></div>';
+    echo '<div style="float:left;"><img class="thumb" src="tools/create.php?view=thumbnail&template_id='.$template['id'].'" /></div>';
     echo '<div style="float:left;padding-left:10px"><h2 style="border:0;">'.$template['name'].'<br /><sub>(template #'.$template['id'].')</sub></h2></div>';
     echo '<div style="float:right;padding-right:10px;padding-top:10px"><a  href="'.$_SERVER['PHP_SELF'].'?action=duplicate&template_id='.$template['id'].'"><img alt="Duplicate this template" title="Duplicate this template" src="images/duplicate.png" style="height:2em;" /></a></div>';
     echo '<hr />';

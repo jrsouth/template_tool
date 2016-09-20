@@ -179,7 +179,7 @@ if(count($tags) > 0) {
 		    echo '<p>';
 		    echo '<a href="index.php?template_id='.$template['id'].'&reset=1&step=2">'.$template['name'].'</a>';
 		    echo '</p>';
-		    echo '<a href="index.php?template_id='.$template['id'].'&reset=1&step=2"><img src="tools/createPDF.php?view=thumbnail&template_id='.$template['id'].'" class="thumb" /></a>';
+		    echo '<a href="index.php?template_id='.$template['id'].'&reset=1&step=2"><img src="tools/create.php?view=thumbnail&template_id='.$template['id'].'" class="thumb" /></a>';
 		    echo '<br class="clear" />';
 		echo('</div>');
 		$odd_row = !$odd_row;
@@ -226,14 +226,14 @@ function displayCurrentPreview() {
 	if ($working_template_id > 0) {
 		for ($currentPage = 1; $currentPage <= $template['pagecount'] ; $currentPage++) {
 			echo('<img src="images/cursor.png" class="field-locator" id="fieldLocator'.$currentPage.'">');
-			echo '<img id="previewPage'.$currentPage.'" width="'.$preview_size.'" src="tools/createPDF.php?working_template_id='.$working_template_id.'&view=preview&page='.$currentPage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
+			echo '<img id="previewPage'.$currentPage.'" width="'.$preview_size.'" src="tools/create.php?working_template_id='.$working_template_id.'&view=preview&page='.$currentPage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 			echo '<br />';
 		}
 
 	} else {
 		for ($currentPage = 1; $currentPage <= $template['pagecount'] ; $currentPage++) {
 			echo('<img src="images/cursor.png" class="field-locator" id="fieldLocator'.$currentPage.'" onload="rotateElement(this);">');
-			echo '<img id="previewPage'.$currentPage.'" width="'.$preview_size.'" src="tools/createPDF.php?template_id='.$template['id'].'&view=preview&page='.$currentPage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
+			echo '<img id="previewPage'.$currentPage.'" width="'.$preview_size.'" src="tools/create.php?template_id='.$template['id'].'&view=preview&page='.$currentPage.(isset($_GET['reset'])?'&reset=1':'').'" class="preview" />';
 			echo '<br />';
 		}
 	}
@@ -672,10 +672,10 @@ function placeImage($pdf, $imgfile, $bbxloc, $bbyloc, $bbwidth, $bbheight, $plac
 function displayDownloadBox() {
 	global $working_template_id;
         echo '<div id="download-box">';
-        echo '<a href="tools/createPDF.php?working_template_id='.$working_template_id.'" target="llrtemplatepreview">View PDF</a>';
-        echo ' | <a href="tools/createPDF.php?working_template_id='.$working_template_id.'&download=1" target="llrtemplatepreview">Download PDF</a>';
-        echo ' <br /><a href="tools/createPDF.php?working_template_id='.$working_template_id.'&view=highres&page=1" target="llrtemplatepreview">View JPG</a>';
-        echo ' | <a href="tools/createPDF.php?working_template_id='.$working_template_id.'&view=highres&page=1&download=1" target="llrtemplatepreview">Download JPG</a>';
+        echo '<a href="tools/create.php?working_template_id='.$working_template_id.'" target="llrtemplatepreview">View PDF</a>';
+        echo ' | <a href="tools/create.php?working_template_id='.$working_template_id.'&download=1" target="llrtemplatepreview">Download PDF</a>';
+        echo ' <br /><a href="tools/create.php?working_template_id='.$working_template_id.'&view=highres&page=1" target="llrtemplatepreview">View JPG</a>';
+        echo ' | <a href="tools/create.php?working_template_id='.$working_template_id.'&view=highres&page=1&download=1" target="llrtemplatepreview">Download JPG</a>';
         echo '</div><br />';
 }
 
