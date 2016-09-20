@@ -139,8 +139,8 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 		// Loop through fields and place either provided text or default
 
 		// Code to select fields from database
-		$images = get_images($template['id'], $currentpage);
-		$fields = get_fields($template['id'], $currentpage);
+		$images = getImages($template['id'], $currentpage);
+		$fields = getFields($template['id'], $currentpage);
 
 		foreach ($images as $image) { // display images in order
 

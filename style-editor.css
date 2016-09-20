@@ -4,6 +4,12 @@ html {
 overflow-y: scroll;
 }
 
+code, pre {
+    background: #cccccc;
+    padding: .2em .5em;
+    color: #000000;
+}
+
 h2 {
     font-size: 1.8em;
     text-transform: uppercase;

@@ -408,7 +408,8 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
     echo '<div class="top-tab" onclick="hideAllBut(\'section-parent\', \'section-edit-fields\');makeInverted(this);">Edit fields</div>';
     echo '<div class="top-tab" onclick="hideAllBut(\'section-parent\', \'section-new-image\');makeInverted(this);">New image</div>';
     echo '<div class="top-tab" onclick="hideAllBut(\'section-parent\', \'section-edit-images\');makeInverted(this);">Edit images</div>';
-    echo '<div class="top-tab last" onclick="hideAllBut(\'section-parent\', \'section-edit-template\');makeInverted(this);">Edit template</div>';
+    echo '<div class="top-tab" onclick="hideAllBut(\'section-parent\', \'section-edit-template\');makeInverted(this);">Edit template</div>';
+    echo '<div class="top-tab last" onclick="hideAllBut(\'section-parent\', \'section-html-form\');makeInverted(this);">Embeddable HTML</div>';
     echo '<br class="clear" />';
 
     echo '</div>';
@@ -594,7 +595,38 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
 
     echo '</div>'; // End edit template section
+    
+    
 
+
+
+    // ----------------- HTML FORM ---------------------------------------------
+
+
+    // echo('<h3>Bare-bones HTML form</h3>');
+
+    echo '<div id="section-html-form" style="display: none;">';
+    
+    echo('<p>You can paste the below into a static or CMS-generated page, and customise it as needed.</p>');
+    echo('<ul>');
+    echo('<li>Inputs can be changed to <code>type="hidden"</code> and given a value in order to lock fields.</li>');
+    echo('<li>The end of the <code>action</code> URL is the name of the tab when displayed in Chrome\'s PDF viewer.</li>');
+    echo('<li>The <code>download_name</code> input is the default name used to download the output.</li>');
+    echo('<li>Inputs can be changed to radio buttons/selectors/jqueryUI inputs, although testing is definitely advised.</li>');
+    echo('</ul>');
+    
+    
+    echo('<h3>Code:</h3><pre>' . htmlspecialchars(generateSimpleHTMLForm($template['id'])) . '</pre>');
+    
+    echo('<h3>Preview:</h3>'.generateSimpleHTMLForm($template['id']).'<br><br><br>');
+
+
+    echo '</div>'; // End HTML form section
+
+    
+    
+    
+    
 
     echo '</div>'; // end main content section
 

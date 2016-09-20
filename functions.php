@@ -383,7 +383,7 @@ echo('Template ID: ' . $template_id . ' || Name = ' . $result['name']);
  * @param unknown $pageno      (optional)
  * @return unknown
  */
-function get_fields($template_id, $pageno = 0) {
+function getFields($template_id, $pageno = 0) {
 	// Gets and sorts fields based on y_position and parent relationships
 	$page_restriction = '';
 	if ($pageno > 0) {
@@ -440,7 +440,7 @@ function get_fields($template_id, $pageno = 0) {
  * @param unknown $pageno      (optional)
  * @return unknown
  */
-function get_images($template_id, $pageno = 0) {
+function getImages($template_id, $pageno = 0) {
 	// Gets images array sorted by y_position
 	$page_restriction = '';
 	if ($pageno > 0) {
@@ -484,8 +484,8 @@ function displayForm() {
 	if ($working_template_id > 0) { displayDownloadBox(); };
 
 
-	$images = get_images($template['id']);
-	$fields = get_fields($template['id']);
+	$images = getImages($template['id']);
+	$fields = getFields($template['id']);
 	$scale = $preview_size/$template['width'];
 
 	echo '<form action="index.php?step=2" method="POST" enctype="multipart/form-data">';
@@ -677,6 +677,49 @@ function displayDownloadBox() {
         echo ' <br /><a href="tools/createPDF.php?working_template_id='.$working_template_id.'&view=highres&page=1" target="llrtemplatepreview">View JPG</a>';
         echo ' | <a href="tools/createPDF.php?working_template_id='.$working_template_id.'&view=highres&page=1&download=1" target="llrtemplatepreview">Download JPG</a>';
         echo '</div><br />';
+}
+
+function generateSimpleHTMLForm($templateID) {
+        $html = '';
+        
+        $template = getTemplate($templateID);
+        $fields = getFields($templateID);
+        $images = getImages($templateID);
+        
+        $html .= '<form action="'.$_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].dirname($_SERVER["REQUEST_URI"]).'create/'.$template['name'].'" method="post" target="_blank" enctype="multipart/form-data">';
+        
+        $html .= "\n\n\t" . '<input name="download_name" type="hidden" value="'.$template['name'].'.pdf">'; 
+        $html .= "\n\t" . '<input name="template_id" type="hidden" value="'.$template['id'].'">'; 
+        
+        if (count($fields) > 0) {
+            $html .= "\n\t\n\t\n\t" . '<!-- Inputs for all editable text fields -->';
+            foreach ($fields as $f) {
+                if ($f['type'] != 'wrapper') {
+                    $html .= "\n\t\n\t" . '<label for="f'.$f['id'].'">'.$f['name'].'</label><br>';
+                    if ($f['wrap_width'] > 0) { // If it's a wrapping box
+                            $html .= "\n\t" . '<textarea name="f'.$f['id'].'" id="f'.$f['id'].'"></textarea><br>';
+                        } else { // Otherwise it's a fragment
+                            $html .= "\n\t" . '<input name="f'.$f['id'].'" type="text" id="f'.$f['id'].'"><br>';
+                        }
+                }
+            }
+        }
+            
+            
+        if (count($images) > 0) {
+            $html .= "\n\t\n\t\n\t" . '<!-- Inputs for all images -->';
+            foreach ($images as $i) {
+                $html .= "\n\t\n\t" . '<label for="img'.$i['id'].'">'.$i['name'].'</label><br>';
+                $html .= "\n\t" . '<input name="img'.$i['id'].'" type="file" id="img'.$i['id'].'"><br>';
+            }
+        }
+        
+        $html .= "\n\n\n\t" . '<input type="submit" name="submit" value="Create PDF">';
+        
+    
+        $html .= "\n\n" . '</form>';
+
+        return($html);
 }
 
 
