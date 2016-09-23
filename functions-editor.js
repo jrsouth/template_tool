@@ -95,3 +95,24 @@ function makeBold (span_element) {
   exception.style.fontWeight = 'bold'
   
 }
+
+function toggleBlock (id) {
+    el = document.getElementById(id);
+    el.style.display = (el.style.display=='block')?'none':'block';
+}
+
+function syncColourInputs(sourceEl) {
+    
+    if (isHexColour(sourceEl.value)) {
+        let targetId = sourceEl.id.substring(0,9   ) + ((sourceEl.type==='text')?'Picker':'Field');
+        let targetEl = document.getElementById(targetId);
+        targetEl.value = sourceEl.value;
+    }
+    
+}
+
+function isHexColour(s) {
+    return(/^#[0-9A-F]{6}$/i.test(s));
+}
+
+

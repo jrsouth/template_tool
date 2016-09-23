@@ -187,8 +187,6 @@ function displayTemplateEditor($id) {
 	echo '<input type="hidden" name="template_id" value="'.$id.'" />';
 	echo '<input type="hidden" name="alter_template" value="yes" />';
 
-	echo '<input class="button" type="submit" name="savetemplate" value="Save template" />';
-
 	echo '<table class="editor">';
 
 	// echo('<tr class="header"><td colspan="2">New field</td></tr>');
@@ -611,7 +609,7 @@ function displayImageEditor($image) {
  * @return unknown
  */
 function getAllTemplates() {
-	global $db_connection;
+	
 	$sql = 'SELECT * FROM `templates` ORDER BY `name`';
 	$results = mysqli_query(DB::$conn,$sql);
 	$templates = array();
@@ -629,7 +627,7 @@ function getAllTemplates() {
  * @return unknown
  */
 function getTemplate($template_id) {
-	global $db_connection;
+	
 	$sql = 'SELECT * FROM `templates` WHERE `id` = '.$template_id;
 	$results = mysqli_query(DB::$conn,$sql);
 	$template = mysqli_fetch_array($results);
@@ -665,7 +663,7 @@ function getAllImageAlignments() {
  * @return unknown
  */
 function getAllColours() {
-	global $db_connection;
+	
 	$sql = 'SELECT * FROM `colours` ORDER BY `name`';
 	$results = mysqli_query(DB::$conn,$sql);
 	$colours = array();
@@ -682,7 +680,7 @@ function getAllColours() {
  * @return unknown
  */
 function getAllFonts() {
-	global $db_connection;
+	
 	$sql = 'SELECT * FROM `fonts` ORDER BY `display_name`';
 	$results = mysqli_query(DB::$conn,$sql);
 	$fonts = array();
@@ -700,7 +698,7 @@ function getAllFonts() {
  * @return unknown
  */
 function getTemplateFields($template_id) {
-	global $db_connection;
+	
 	$sql = 'SELECT * FROM `fields` WHERE `template_id` = '.$template_id.' ORDER BY `name`';
 	$results = mysqli_query(DB::$conn,$sql);
 	$fields = array();
@@ -718,7 +716,7 @@ function getTemplateFields($template_id) {
  * @return unknown
  */
 function getTemplateImages($template_id) {
-	global $db_connection;
+	
 	$sql = 'SELECT * FROM `images` WHERE `template_id` = '.$template_id.' ORDER BY `name`';
 	$results = mysqli_query(DB::$conn,$sql);
 	$images = array();
@@ -736,7 +734,7 @@ function getTemplateImages($template_id) {
  * @return unknown
  */
 function getField($field_id) {
-	global $db_connection;
+	
 	$sql = 'SELECT * FROM `fields` WHERE `id` = '.$field_id;
 	$results = mysqli_query(DB::$conn,$sql);
 	$field = mysqli_fetch_array($results);
@@ -749,12 +747,25 @@ function getField($field_id) {
  * @return unknown
  */
 function getImage($image_id) {
-	global $db_connection;
+	
 	$sql = 'SELECT * FROM `images` WHERE `id` = '.$image_id;
 	$results = mysqli_query(DB::$conn,$sql);
 	$image = mysqli_fetch_array($results);
 	return $image;
 }
+
+function getColourUsage($colour_id) {
+	
+	$sql = 'SELECT `template_id` FROM `fields` WHERE `colour_id` = '.$colour_id . ' GROUP BY `template_id`';
+	$results = mysqli_query(DB::$conn,$sql);
+	$templateIDs = array();
+	
+	while ($results && $result = mysqli_fetch_array($results)) {
+		$templateIDs[] = $result;
+	}	
+	return $templateIDs;
+}
+
 
 
 ?>

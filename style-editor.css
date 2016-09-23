@@ -34,6 +34,13 @@ h3 {
     border-bottom: 1px solid #cccccc;
     text-transform: uppercase;
     clear: both;
+    cursor: pointer;
+}
+
+h4 {
+    display: block;
+    padding-bottom: .25em;
+    border-bottom: 1px solid;
 }
 
 .list-2-1, .list-2-2 {
@@ -43,6 +50,56 @@ h3 {
 
 .list-2.1 {
     clear: both; 
+}
+
+div#colour_editor {
+    margin: 1em 0;
+    display: none;
+}
+
+div#colour_editor table {
+    width: auto;
+    
+}
+
+div#colour_editor input[type="text"] {
+    width: 5em;
+    margin-left: 0;
+}
+
+input.longInput {
+    width: 10em !important;
+}
+
+div#colour_editor input {
+    margin: .2em 1em;
+}
+
+div.colourSwatchHolder {
+    background: linear-gradient(30deg,#ffffff,#000000);
+    padding: .25em;
+    margin: .25em;
+    text-align: center;
+    width: 4em;
+    height: 4em;
+    border-radius: 100em;
+}
+div.colourSwatch {
+    display: inline-block;
+    border-radius: 100em;
+    width: 3.5em;
+    height: 3.5em;
+    margin: .25em;
+}
+
+input[type="color"] {
+    width: 4em;
+    height: 4em;
+    padding: 0;
+    margin: 0;
+    border-radius: 100em;
+    background: linear-gradient(30deg,#ffffff,#000000);
+    
 }
 
 div.top-tabs {
@@ -80,7 +137,14 @@ ul.basic-list {
 }
 
 ul.basic-list li {
-    margin: 1em 0;
+    margin: .2em 0;
+}
+
+div.editor_section {
+    display: none;
+    border: 1px solid rgba(0,0,0,.1);
+    box-shadow: .5em .5em 1.5em rgba(0,0,0,.25);
+    padding: 1em;
 }
 
 a:hover {
@@ -140,4 +204,8 @@ div.delete-box {
 
 br.clear {
 	clear: both;
+}
+
+p.warningNote {
+    color: #990000;
 }

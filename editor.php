@@ -393,7 +393,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
 
     echo '<div style="float:left;"><img class="thumb" src="tools/create.php?view=thumbnail&template_id='.$template['id'].'" /></div>';
-    echo '<div style="float:left;padding-left:10px"><h2 style="border:0;">'.$template['name'].'<br /><sub>(template #'.$template['id'].')</sub></h2></div>';
+    echo '<div style="float:left;padding-left:10px"><h2 style="border:0;">'.$template['name'].'<br /><sub>(template #'.$template['id'].')</sub></h2><p style="padding-left:2em;"><a href="'.dirname($_SERVER['PHP_SELF']).'index.php?template_id='.$template['id'].'&reset=1&step=2" target="_blank">&gt;&nbsp;Test this template</a></p></div>';
     echo '<div style="float:right;padding-right:10px;padding-top:10px"><a  href="'.$_SERVER['PHP_SELF'].'?action=duplicate&template_id='.$template['id'].'"><img alt="Duplicate this template" title="Duplicate this template" src="images/duplicate.png" style="height:2em;" /></a></div>';
     echo '<hr />';
 
@@ -632,7 +632,37 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 
 
 
-} else { // If no template selected yet display available templates and new template form
+} else { // If no template selected yet display color/font editors, available templates, and new template form
+
+    
+    if (isset($_POST['action']) && $_POST['action'] === 'saveColours') { // Colour form submitted
+
+  
+        for ($i = 0; $i < intval($_POST['number']); $i++) {
+            $sql = '';  
+            if ($_POST['c'.$i.'_keep'] == 'on') {
+                if ($_POST['c'.$i.'_id'] !== 'new') {
+                    $sql .= 'UPDATE `colours` SET `name` = "' . $_POST['c'.$i.'_name'] . '", `RGBA` = "' . substr($_POST['c'.$i.'_colourPicker'],1,6) . 'FF" WHERE `id` = ' . $_POST['c'.$i.'_id'] . ';';
+                } else { // New colour
+                    $sql .= 'INSERT INTO `colours` (`name`,`RGBA`) VALUES ("'.$_POST['c'.$i.'_name'].'","'.substr($_POST['c'.$i.'_colourPicker'],1,6) . 'FF");';
+                }
+            } else if ($_POST['c'.$i.'_id'] !== 'new') { // Can't delete it if it's not in there yet
+                $sql .= 'DELETE FROM `colours` WHERE `id` = ' . $_POST['c'.$i.'_id'] . ';';
+            }
+            if ($sql !== '') mysqli_query(DB::$conn,$sql);
+            //debug($sql.'<br>ERROR: '.mysqli_error(DB::$conn).'<br><br>');
+        }
+        
+        // Set any fields using deleted colour IDs to the first available colour
+        $newColour = getAllColours()[0]['id'];
+        
+        $sql = 'UPDATE `fields` SET `colour_id` = '.$newColour.' WHERE `colour_id` NOT IN (SELECT `id` FROM `colours`);';
+        mysqli_query(DB::$conn,$sql);
+        debug($sql);
+        debug(mysqli_error(DB::$conn));
+        
+    }
+    
 
     $templates = getAllTemplates();
 
@@ -649,13 +679,80 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
         }
     }
 
-    echo '<div class="list-2-1"><h3>Active templates</h3><ul class="basic-list">'.$templates_active.'</ul></div>';
-    echo '<div class="list-2-2"><h3>Inactive templates</h3><ul class="basic-list">'.$templates_inactive.'</ul></div>';
-    echo '<br style="clear:both;"/>';
-    echo '<h3>Add a new template</h3>';
-
+    echo('<h2>Template Editor</h2>');
+    
+    echo('<h3 onclick="toggleBlock(\'current_templates\');">Current templates</h3>');
+    echo('<div id="current_templates"  class="editor_section" style="display:block;">');
+    echo '<div class="list-2-1"><h4>Active templates</h4><ul class="basic-list">'.$templates_active.'</ul></div>';
+    echo '<div class="list-2-2"><h4>Inactive templates</h4><ul class="basic-list">'.$templates_inactive.'</ul></div>';
+    //echo '<br style="clear:both;"/>';
+    
+    echo('<br style="clear:both;"></div>');
+    
+    
+    echo '<h3 onclick="toggleBlock(\'new_template\');">Add a new template</h3>';
+    
+    echo('<div id="new_template" class="editor_section">');
     displayTemplateEditor('new');
+    echo('<br style="clear:both;"></div>');
 
+    
+    
+    echo('<h3 onclick="toggleBlock(\'colour_editor\');">Colour editor</h3>');
+    
+    echo('<div id="colour_editor" class="editor_section">');
+    echo('<p class="warningNote"><strong>WARNING: Changes made here affect multiple templates. Use&nbsp;with&nbsp;caution!</strong><br>&bull; Unchecked colours will be removed<br>&bull; Text fields using unchecked colours will be set to use the first remaining colour.</p>');
+    
+        $colours = getAllColours();
+        $colours[] = Array('id' => 'new', 'name' => "New", 'RGBA' => 'CCCCCCFF');
+        
+        
+        echo('<form action="'.$_SERVER["PHP_SELF"].'" method="post">');
+        echo('<input type="hidden" name="action" value="saveColours">');
+        echo('<input type="hidden" name="number" value="'.count($colours).'">');
+        echo('<table>');
+        for ($i = 0; $i < count($colours); $i++) {
+            echo('<input type="hidden" name="c'.$i.'_id" value="'.$colours[$i]['id'].'">');
+            echo('<tr>');
+            
+//            echo('<td><div class="colourSwatchHolder"><div class="colourSwatch" style="background-color: #'.substr($colours[$i]['RGBA'],0,6).';"></div></div></td>');
+            echo('<td><input type="checkbox" name="c'.$i.'_keep"'.($i<count($colours)-1?' checked':'').'></td>');
+            
+            echo('<td><input id="c'.$i.'_colourPicker" type="color" name="c'.$i.'_colourPicker" value="#'.substr($colours[$i]['RGBA'],0,6).'" onchange="syncColourInputs(this);"></td>');
+            
+            echo('<td><input type="text" id="c'.$i.'_colourField" name="c'.$i.'_colourField" value="#'.substr($colours[$i]['RGBA'],0,6).'" oninput="syncColourInputs(this);"></td>');
+            
+            echo('<td><input class="longInput" type="text" name="c'.$i.'_name" value="'.$colours[$i]['name'].'"></td>');
+            
+            
+            echo('<td>');
+            $usageInTemplates = getColourUsage($colours[$i]['id']);
+            if (count($usageInTemplates) > 0) {
+                echo('<strong>Used in '.count($usageInTemplates).' template'.(count($usageInTemplates)===1?'':'s').':</strong> ');
+                for ($j = 0; $j < count($usageInTemplates); $j++) {
+                    echo('<a href="'.$_SERVER['PHP_SELF'].'?template_id='.$usageInTemplates[$j]['template_id'].'">'.getTemplate($usageInTemplates[$j]['template_id'])['name'] . '</a>' . ($j<count($usageInTemplates)-1?', ':''));
+                }
+            }
+            echo('</td>');
+            echo('</tr>');
+        }
+        echo('</table>');
+        echo('<input type="submit" value="Save changes">');
+        echo('</form>');
+        
+    
+    echo('<br style="clear:both;"></div>');
+    
+    
+    
+        
+    echo '<h3 onclick="toggleBlock(\'font_editor\');">Font editor</h3>';
+    
+    echo('<div id="font_editor" class="editor_section">');
+    echo('<p>[ Coming soon ]</p>');
+    echo('<br style="clear:both;"></div>');
+    
+    
 
 }
 
