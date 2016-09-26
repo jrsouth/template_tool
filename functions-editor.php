@@ -780,6 +780,9 @@ function getFontUsage($font_id) {
 }
 
 function isTTF($file) {
+
+    if (!function_exists(finfo_open)) {return(true);} // Ancient PHP versions without finfo_open() have to just assume it's okay.
+
     $mimeTypes = array('font/ttf','font/truetype','application/x-font-ttf');
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
     $mime = finfo_file($finfo, $file);

@@ -654,7 +654,8 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
         }
         
         // Set any fields using deleted colour IDs to the first available colour
-        $newColour = getAllColours()[0]['id'];
+        $newColour = getAllColours();
+        $newColour = $newColour[0]['id'];
         
         $sql = 'UPDATE `fields` SET `colour_id` = '.$newColour.' WHERE `colour_id` NOT IN (SELECT `id` FROM `colours`);';
         mysqli_query(DB::$conn,$sql);
@@ -741,7 +742,8 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
         }
         
         // Set any fields using deleted fonts to the first available font
-        $newFont = getAllFonts()[0]['id'];
+        $newFont = getAllFonts();
+        $newFont = $newFont[0]['id'];
         
         $sql = 'UPDATE `fields` SET `font_id` = '.$newFont.' WHERE `font_id` NOT IN (SELECT `id` FROM `fonts`);';
         mysqli_query(DB::$conn,$sql);
@@ -834,7 +836,8 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
                 echo('</p>');   
                 echo('<strong>Used in '.count($usageInTemplates).' template'.(count($usageInTemplates)===1?'':'s').':</strong> ');
                 for ($j = 0; $j < count($usageInTemplates); $j++) {
-                    echo('<a href="'.$_SERVER['PHP_SELF'].'?template_id='.$usageInTemplates[$j]['template_id'].'">'.getTemplate($usageInTemplates[$j]['template_id'])['name'] . '</a>' . ($j<count($usageInTemplates)-1?', ':''));                    
+                    $t = getTemplate($usageInTemplates[$j]['template_id']);
+                    echo('<a href="'.$_SERVER['PHP_SELF'].'?template_id='.$t['id'].'">'.$t['name'] . '</a>' . ($j<count($usageInTemplates)-1?', ':''));
                 }
                 echo('</p>');
             }
@@ -877,7 +880,8 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
                 echo('<p>');
                 echo('<strong>Used in '.count($usageInTemplates).' template'.(count($usageInTemplates)===1?'':'s').':</strong> ');
                 for ($j = 0; $j < count($usageInTemplates); $j++) {
-                    echo('<a href="'.$_SERVER['PHP_SELF'].'?template_id='.$usageInTemplates[$j]['template_id'].'">'.getTemplate($usageInTemplates[$j]['template_id'])['name'] . '</a>' . ($j<count($usageInTemplates)-1?', ':''));
+                    $t = getTemplate($usageInTemplates[$j]['template_id']);
+                    echo('<a href="'.$_SERVER['PHP_SELF'].'?template_id='.$t['id'].'">'.$t['name'] . '</a>' . ($j<count($usageInTemplates)-1?', ':''));
                 }
             }
             echo('<br><br><input type="checkbox" name="font'.$i.'_keep"'.($i<count($fonts)-1?' checked':'').'> Keep font?');
