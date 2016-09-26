@@ -640,7 +640,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
   
         for ($i = 0; $i < intval($_POST['number']); $i++) {
             $sql = '';  
-            if ($_POST['c'.$i.'_keep'] == 'on') {
+            if (isset($_POST['c'.$i.'_keep']) && $_POST['c'.$i.'_keep'] === 'on') {
                 if ($_POST['c'.$i.'_id'] !== 'new') {
                     $sql .= 'UPDATE `colours` SET `name` = "' . $_POST['c'.$i.'_name'] . '", `RGBA` = "' . substr($_POST['c'.$i.'_colourPicker'],1,6) . 'FF" WHERE `id` = ' . $_POST['c'.$i.'_id'] . ';';
                 } else { // New colour
@@ -658,12 +658,111 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
         
         $sql = 'UPDATE `fields` SET `colour_id` = '.$newColour.' WHERE `colour_id` NOT IN (SELECT `id` FROM `colours`);';
         mysqli_query(DB::$conn,$sql);
-        debug($sql);
-        debug(mysqli_error(DB::$conn));
+        
+        
+    }
+    
+        if (isset($_POST['action']) && $_POST['action'] === 'saveFonts') { // Font form submitted
+        
+        // Check for uploaded files, process as needed (makeFont.php)
+
+  
+        for ($i = 0; $i < intval($_POST['number']); $i++) {
+        
+        
+                $font_file = 'Error: no file';
+                $original_file = 'Error: no file';
+                
+                $font_dir = 'storage/fonts/';
+                       
+            if ($_POST['font'.$i.'_id'] !== 'new') {
+                $originalFontData = getFont($_POST['font'.$i.'_id']);
+                $font_file = $originalFontData['font_file'];
+                $original_file = $originalFontData['original_file'];
+                
+            } 
+            
+            $sql = '';
+            
+            if (isset($_POST['font'.$i.'_keep']) && $_POST['font'.$i.'_keep'] === 'on') {
+            
+                if(isset($_FILES['font'.$i.'_upload']) && $_FILES['font'.$i.'_upload']['error'] === 0) { // IF there's a new font file successfully uploaded
+                
+                    $newFontFile = $_FILES['font'.$i.'_upload'];
+                    
+                    
+                    if (isTTF($newFontFile['tmp_name'])) { // upload successful and check for valid font file
+                        
+                        
+                        require_once('tools/fpdf/makefont/makefontinline.php'); // Inline version, only load it if it's needed.
+                        
+			$font_internal_name = uniqid().pathinfo(basename($newFontFile['name']),PATHINFO_FILENAME);
+
+			
+			// Process with MakeFont and move .php and .z files into place
+			$fontUpload = $font_dir . $font_internal_name . '.ttf';
+			move_uploaded_file($newFontFile['tmp_name'], $fontUpload);
+			
+			// Let the magic happen...
+			MakeFont($fontUpload, $font_dir);
+			
+			// Remove TTF file as no longer needed (FPDF uses the .z version)
+			unlink($fontUpload);
+			
+                        $font_file = $font_internal_name;
+       			$original_file = $newFontFile['name'];
+                
+                    
+                    }
+                    
+                    
+                    
+                    
+                    
+                }
+                if ($_POST['font'.$i.'_id'] !== 'new') {
+                    $sql .= 'UPDATE `fonts` SET `name` = "' . $_POST['font'.$i.'_name'] . '", `font_file` = "' . $font_file . '", `original_file` = "'.$original_file.'" WHERE `id` = ' . $_POST['font'.$i.'_id'] . ';';
+                } else { // New font
+                    $sql .= 'INSERT INTO `fonts` (`name`,`font_file`, `original_file`) VALUES ("'.$_POST['font'.$i.'_name'].'","'.$font_file.'","'.$original_file.'");';
+                }
+            } else if ($_POST['font'.$i.'_id'] !== 'new') { // Can't delete it if it's not in there yet
+                
+                // Remove from database
+                $sql .= 'DELETE FROM `fonts` WHERE `id` = ' . $_POST['font'.$i.'_id'] . ';';
+                
+                // Remove files
+                unlink($font_dir.$originalFontData['font_file'].'.php');
+                unlink($font_dir.$originalFontData['font_file'].'.z');
+                
+                
+            }
+            if ($sql !== '') mysqli_query(DB::$conn,$sql);
+            //debug($sql.'<br>ERROR: '.mysqli_error(DB::$conn).'<br><br>');
+        }
+        
+        // Set any fields using deleted fonts to the first available font
+        $newFont = getAllFonts()[0]['id'];
+        
+        $sql = 'UPDATE `fields` SET `font_id` = '.$newFont.' WHERE `font_id` NOT IN (SELECT `id` FROM `fonts`);';
+        mysqli_query(DB::$conn,$sql);
+        //debug($sql);
+        //debug(mysqli_error(DB::$conn));
         
     }
     
 
+    
+    
+    
+    
+        
+  
+    
+    
+
+    echo('<h2>Template Editor</h2>');
+    
+    
     $templates = getAllTemplates();
 
 
@@ -678,8 +777,8 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
             $templates_inactive .= ('<li><a href="'.$_SERVER['PHP_SELF'].'?template_id='.$template['id'].'">'.$template['name'].'</a></li>');
         }
     }
-
-    echo('<h2>Template Editor</h2>');
+    
+    
     
     echo('<h3 onclick="toggleBlock(\'current_templates\');">Current templates</h3>');
     echo('<div id="current_templates"  class="editor_section" style="display:block;">');
@@ -690,12 +789,17 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
     echo('<br style="clear:both;"></div>');
     
     
+    
+    
+    
     echo '<h3 onclick="toggleBlock(\'new_template\');">Add a new template</h3>';
     
     echo('<div id="new_template" class="editor_section">');
     displayTemplateEditor('new');
     echo('<br style="clear:both;"></div>');
 
+    
+    
     
     
     echo('<h3 onclick="toggleBlock(\'colour_editor\');">Colour editor</h3>');
@@ -715,7 +819,6 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
             echo('<input type="hidden" name="c'.$i.'_id" value="'.$colours[$i]['id'].'">');
             echo('<tr>');
             
-//            echo('<td><div class="colourSwatchHolder"><div class="colourSwatch" style="background-color: #'.substr($colours[$i]['RGBA'],0,6).';"></div></div></td>');
             echo('<td><input type="checkbox" name="c'.$i.'_keep"'.($i<count($colours)-1?' checked':'').'></td>');
             
             echo('<td><input id="c'.$i.'_colourPicker" type="color" name="c'.$i.'_colourPicker" value="#'.substr($colours[$i]['RGBA'],0,6).'" onchange="syncColourInputs(this);"></td>');
@@ -728,10 +831,12 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
             echo('<td>');
             $usageInTemplates = getColourUsage($colours[$i]['id']);
             if (count($usageInTemplates) > 0) {
+                echo('</p>');   
                 echo('<strong>Used in '.count($usageInTemplates).' template'.(count($usageInTemplates)===1?'':'s').':</strong> ');
                 for ($j = 0; $j < count($usageInTemplates); $j++) {
-                    echo('<a href="'.$_SERVER['PHP_SELF'].'?template_id='.$usageInTemplates[$j]['template_id'].'">'.getTemplate($usageInTemplates[$j]['template_id'])['name'] . '</a>' . ($j<count($usageInTemplates)-1?', ':''));
+                    echo('<a href="'.$_SERVER['PHP_SELF'].'?template_id='.$usageInTemplates[$j]['template_id'].'">'.getTemplate($usageInTemplates[$j]['template_id'])['name'] . '</a>' . ($j<count($usageInTemplates)-1?', ':''));                    
                 }
+                echo('</p>');
             }
             echo('</td>');
             echo('</tr>');
@@ -745,12 +850,57 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
     
     
     
-        
-    echo '<h3 onclick="toggleBlock(\'font_editor\');">Font editor</h3>';
+    
+      echo '<h3 onclick="toggleBlock(\'font_editor\');">Font editor</h3>';
     
     echo('<div id="font_editor" class="editor_section">');
-    echo('<p>[ Coming soon ]</p>');
-    echo('<br style="clear:both;"></div>');
+    echo('<p class="warningNote"><strong>WARNING: Changes made here affect multiple templates. Use&nbsp;with&nbsp;caution!</strong><br>&bull; Unchecked fonts will be removed<br>&bull; Only TTF font files are currently supported (<a href="https://everythingfonts.com/otf-to-ttf" target="_blank">font format tools here</a>)<br>&bull; Text fields using removed fonts will be set to use the first remaining font.</p>');
+    
+    $fonts = getAllFonts();
+    $fonts[] = Array('id' => 'new', 'name' => 'New font', 'font_file' => '&lt;no font&gt;', 'original_file' => 'No file');
+    
+        echo('<form action="'.$_SERVER["PHP_SELF"].'" method="post" enctype="multipart/form-data">');
+        echo('<input type="hidden" name="action" value="saveFonts">');
+        echo('<input type="hidden" name="number" value="'.count($fonts).'">');
+        for ($i = 0; $i < count($fonts); $i++) {
+            echo('<div class="font-block">');
+            echo('<p class="name">'.$fonts[$i]['name'].' <span class="edit-link" onclick="toggleBlock(\'font-editor-'.$i.'\');">EDIT</span></p>');
+            
+            echo('<input type="hidden" name="font'.$i.'_id" value="'.$fonts[$i]['id'].'">');
+                        
+            echo('<div class="font-preview-holder"><div class="font-preview-fader"></div><img class="font-preview" src="tools/fontPreview.php?id='.$fonts[$i]['id'].'" onclick="toggleBlock(\'font-editor-'.$i.'\');"></div>');
+            
+            echo('<div class="font-editor" id="font-editor-'.$i.'">');     
+            
+            $usageInTemplates = getFontUsage($fonts[$i]['id']);
+            if (count($usageInTemplates) > 0) {
+                echo('<p>');
+                echo('<strong>Used in '.count($usageInTemplates).' template'.(count($usageInTemplates)===1?'':'s').':</strong> ');
+                for ($j = 0; $j < count($usageInTemplates); $j++) {
+                    echo('<a href="'.$_SERVER['PHP_SELF'].'?template_id='.$usageInTemplates[$j]['template_id'].'">'.getTemplate($usageInTemplates[$j]['template_id'])['name'] . '</a>' . ($j<count($usageInTemplates)-1?', ':''));
+                }
+            }
+            echo('<br><br><input type="checkbox" name="font'.$i.'_keep"'.($i<count($fonts)-1?' checked':'').'> Keep font?');
+            
+            
+            echo('<br><label for="font'.$i.'_name">Display name</label><br><input id="font'.$i.'_name" class="longInput" type="text" name="font'.$i.'_name" value="'.$fonts[$i]['name'].'">');
+            
+            echo('<br><label for="font'.$i.'_original_file">New TTF file</label><br><input type="file" id="font'.$i.'_upload" name="font'.$i.'_upload"><br><span class="field-current-image"><strong>&nbsp;&nbsp;&nbsp;&bullet;&nbsp;Current file:</strong> ' . $fonts[$i]['original_file'] .'</span>');
+
+            echo('</div>');
+            echo('</div>');
+        }
+        echo('<input type="submit" value="Save changes">');
+        echo('</form>');
+        
+    
+    echo('<br style="clear:both;">');
+
+    
+    echo('</div>');
+    
+    
+    
     
     
 

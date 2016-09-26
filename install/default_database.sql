@@ -76,8 +76,9 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `fonts`;
 CREATE TABLE `fonts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `display_name` varchar(64) NOT NULL,
+  `name` varchar(64) NOT NULL,
   `font_file` varchar(64) NOT NULL,
+  `original_file` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -87,18 +88,18 @@ CREATE TABLE `fonts` (
 
 LOCK TABLES `fonts` WRITE;
 INSERT INTO `fonts` VALUES
-	(NULL,'Roboto Light','roboto_light.php'),
-	(NULL,'Roboto Black Italic','roboto_blackitalic.php'),
-	(NULL,'Roboto Black','roboto_black.php'),
-	(NULL,'Roboto Bold Italic','roboto_bolditalic.php'),
-	(NULL,'Roboto Bold','roboto_bold.php'),
-	(NULL,'Roboto Italic','roboto_italic.php'),
-	(NULL,'Roboto Light Italic','roboto_lightitalic.php'),
-	(NULL,'Roboto Medium Italic','roboto_mediumitalic.php'),
-	(NULL,'Roboto Medium','roboto_medium.php'),
-	(NULL,'Roboto Regular','roboto_regular.php'),
-	(NULL,'Roboto Thin Italic','roboto_thinitalic.php'),
-	(NULL,'Roboto Thin','roboto_thin.php');
+	(NULL,'Roboto Light','roboto_light','roboto_light.ttf'),
+	(NULL,'Roboto Black Italic','roboto_blackitalic','roboto_blackitalic.ttf'),
+	(NULL,'Roboto Black','roboto_black','roboto_black.ttf'),
+	(NULL,'Roboto Bold Italic','roboto_bolditalic','roboto_bolditalic.ttf'),
+	(NULL,'Roboto Bold','roboto_bold','roboto_bold.ttf'),
+	(NULL,'Roboto Italic','roboto_italic','roboto_italic.ttf'),
+	(NULL,'Roboto Light Italic','roboto_lightitalic','roboto_lightitalic.ttf'),
+	(NULL,'Roboto Medium Italic','roboto_mediumitalic','roboto_mediumitalic.ttf'),
+	(NULL,'Roboto Medium','roboto_medium','roboto_medium.ttf'),
+	(NULL,'Roboto Regular','roboto_regular','roboto_regular.ttf'),
+	(NULL,'Roboto Thin Italic','roboto_thinitalic','roboto_thinitalic.ttf'),
+	(NULL,'Roboto Thin','roboto_thin','roboto_thin.ttf');
 UNLOCK TABLES;
 
 --

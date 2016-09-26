@@ -499,7 +499,7 @@ function displayFieldEditor($field) {
 	// FONT SELECTOR
 	echo 'Font: <select name="field-'.$field['id'].'-font_id">';
 	foreach ($fonts as $font) {
-		echo '<option value="'.$font['id'].'"'.($field['font_id']==$font['id']?' selected="selected"':'').'>'.$font['display_name'].'</option>';
+		echo '<option value="'.$font['id'].'"'.($field['font_id']==$font['id']?' selected="selected"':'').'>'.$font['name'].'</option>';
 	}
 	echo '</select> ';
 
@@ -681,7 +681,7 @@ function getAllColours() {
  */
 function getAllFonts() {
 	
-	$sql = 'SELECT * FROM `fonts` ORDER BY `display_name`';
+	$sql = 'SELECT * FROM `fonts` ORDER BY `name`';
 	$results = mysqli_query(DB::$conn,$sql);
 	$fonts = array();
 	while ($result = mysqli_fetch_array($results)) {
@@ -766,6 +766,30 @@ function getColourUsage($colour_id) {
 	return $templateIDs;
 }
 
+
+function getFontUsage($font_id) {
+	
+	$sql = 'SELECT `template_id` FROM `fields` WHERE `font_id` = '.$font_id . ' GROUP BY `template_id`';
+	$results = mysqli_query(DB::$conn,$sql);
+	$templateIDs = array();
+	
+	while ($results && $result = mysqli_fetch_array($results)) {
+		$templateIDs[] = $result;
+	}	
+	return $templateIDs;
+}
+
+function isTTF($file) {
+    $mimeTypes = array('font/ttf','font/truetype','application/x-font-ttf');
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($finfo, $file);
+    $isTTF = false;
+    if(in_array($mime, $mimeTypes)){
+        $isTTF = true;
+    }
+    finfo_close($finfo);
+    return($isTTF);
+}
 
 
 ?>

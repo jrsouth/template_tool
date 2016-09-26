@@ -767,3 +767,8 @@ function getListOfTags($tags_array, $tag_to_remove = null) {
 	}
 	return($tags_string);
 }
+
+function getFont($font_id) {
+	$sql = 'SELECT * FROM `fonts` WHERE `id` = '.$font_id;
+	return(mysqli_fetch_array(mysqli_query(DB::$conn,$sql)));
+}

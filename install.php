@@ -77,7 +77,7 @@ echo '<?xml version="1.0" encoding="utf-8" ?>';
 // Check for existing installation
 
 $result = mysqli_query(DB::$conn,'SELECT COUNT(id) FROM colours');
-if (mysqli_error()) {
+if (mysqli_error(DB::$conn)) {
   $db_exists = 0;
 } else {
   $db_exists = 1;

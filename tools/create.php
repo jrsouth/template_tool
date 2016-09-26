@@ -220,8 +220,8 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 			// Add in \n line breaks
 			// $content = "Test\nline2";
 
-			$pdf->AddFont($font['display_name'], '', $font['font_file']);
-			$pdf->SetFont($font['display_name']);
+			$pdf->AddFont($font['name'], '', $font['font_file'].'.php');
+			$pdf->SetFont($font['name']);
 			$pdf->SetFontSize($field['font_size']);
 			$pdf->SetFontSpacing($field['kerning']); // XXXX TESTING ONLY
 			$pdf->SetTextColor($colourValue['R'], $colourValue['G'], $colourValue['B']); // Need to convert CMYK to RGB (or allow CMYK text)

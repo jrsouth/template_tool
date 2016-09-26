@@ -52,17 +52,17 @@ h4 {
     clear: both; 
 }
 
-div#colour_editor {
+div.editor_section {
     margin: 1em 0;
     display: none;
 }
 
-div#colour_editor table {
+div.editor_section table {
     width: auto;
     
 }
 
-div#colour_editor input[type="text"] {
+div.editor_section input[type="text"] {
     width: 5em;
     margin-left: 0;
 }
@@ -208,4 +208,70 @@ br.clear {
 
 p.warningNote {
     color: #990000;
+}
+
+div.font-preview-holder {
+    margin: 0em;
+    border: 1px solid rgba(0,0,0,.2);
+    box-shadow: .5em .5em 1.5em rgba(0,0,0,.25);   
+    overflow: hidden;
+}
+
+img.font-preview {
+    margin: 0;
+    padding: 0;
+    display: block;
+    cursor: pointer;
+}
+
+div.font-preview-fader {
+    content: "";
+    width: 8em;
+    height: 10em;
+    position: relative;
+    float: right;
+    margin-bottom: -10em;
+    background-image: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,1) 80%);
+}
+
+/*
+ * {
+    width: 8em;
+    height: 10em;
+    position: relative;
+    float: right;
+    margin-bottom: -10em;
+    background-image: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,1) 80%);
+}
+*/
+
+div.font-block {
+    margin: 1em 0;
+    padding: 1em;
+    border: 1px solid rgba(0,0,0,.2);
+    box-shadow: .5em .5em 1.5em rgba(0,0,0,.25);
+    
+}
+
+div.font-block p.name {
+    font-size: 1.5em;
+    font-weight: 900;
+    margin: 0 0 .3em;
+}
+
+.font-editor {
+    display: none;
+}
+
+.font-editor input[type="file"] {
+    margin: 0;
+}
+
+span.edit-link {
+    font-size: .5em;
+    color: #999999;
+    cursor: pointer;
+}
+span.edit-link:hover {
+    color: #cc3333;
 }
