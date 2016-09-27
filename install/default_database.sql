@@ -53,7 +53,7 @@ CREATE TABLE `fields` (
   `leading` double NOT NULL DEFAULT '0',
   `parent` int(11) DEFAULT NULL,
   `page` int(11) DEFAULT '1',
-  `kerning` double DEFAULT '0',
+  `tracking` double DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `template_id` (`template_id`),
   KEY `font_id` (`font_id`)

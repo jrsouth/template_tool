@@ -223,7 +223,7 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 			$pdf->AddFont($font['name'], '', $font['font_file'].'.php');
 			$pdf->SetFont($font['name']);
 			$pdf->SetFontSize($field['font_size']);
-			$pdf->SetFontSpacing($field['kerning']); // XXXX TESTING ONLY
+			$pdf->SetFontSpacing($field['tracking']); // XXXX TESTING ONLY
 			$pdf->SetTextColor($colourValue['R'], $colourValue['G'], $colourValue['B']); // Need to convert CMYK to RGB (or allow CMYK text)
 			$leadingmm = 0.352777778 * $field['leading']; // Convert points to mm
 			if ($field['parent'] > 0) {

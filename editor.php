@@ -136,7 +136,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
 		' . $field['leading'] . ',
 		' . $field['parent'] . ',
 		' . $field['page'] . ',
-		' . $field['kerning'] . '
+		' . $field['tracking'] . '
 		)';
 
 	mysqli_query(DB::$conn,$sql);
@@ -454,7 +454,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
         'y_position' => (isset($_POST['field-new-y_position'])?$_POST['field-new-y_position']:''),
         'wrap_width' => (isset($_POST['field-new-wrap_width'])?$_POST['field-new-wrap_width']:''),
         'leading' => (isset($_POST['field-new-leading'])?$_POST['field-new-leading']:''),
-        'kerning' => (isset($_POST['field-new-kerning'])?$_POST['field-new-kerning']:'0'),
+        'tracking' => (isset($_POST['field-new-tracking'])?$_POST['field-new-tracking']:'0'),
         'parent' => 0,
         'page' => 1,
     );

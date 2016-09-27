@@ -327,11 +327,11 @@ function validateFieldPostData($fieldID) {
 	} else { $flag++; $msg.='Error with leading<br />'; }
 
 
-	if (isset($_POST[$prefix.'kerning']) && is_numeric($_POST[$prefix.'kerning'])) {
-		$sql .= ', `kerning` = '.$_POST[$prefix.'kerning'];
+	if (isset($_POST[$prefix.'tracking']) && is_numeric($_POST[$prefix.'tracking'])) {
+		$sql .= ', `tracking` = '.$_POST[$prefix.'tracking'];
 	} else { 
-            $sql .= ', `kerning` = 0';
-            $_POST[$prefix.'kerning'] = 0;
+            $sql .= ', `tracking` = 0';
+            $_POST[$prefix.'tracking'] = 0;
         }
 
 	if (isset($_POST[$prefix.'font_id'])) {
@@ -493,7 +493,7 @@ function displayFieldEditor($field) {
 
 	echo 'Font size:<br /><input class="short" type="text" name="field-'.$field['id'].'-font_size" value="'.$field['font_size'].'" /><br />';
 
-	echo 'Kerning:<br /><input class="short" type="text" name="field-'.$field['id'].'-kerning" value="'.$field['kerning'].'" /><br />';
+	echo 'Tracking:<br /><input class="short" type="text" name="field-'.$field['id'].'-tracking" value="'.$field['tracking'].'" /><br />';
 
 	echo 'Leading:<br /><input class="short" type="text" name="field-'.$field['id'].'-leading" value="'.$field['leading'].'" /><br />';
 	// FONT SELECTOR
