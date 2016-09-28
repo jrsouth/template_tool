@@ -278,6 +278,10 @@ function validateFieldPostData($fieldID) {
 		$sql .= ', `name` = "'.trim($_POST[$prefix.'name']).'"';
 	} else { $flag++; $msg.='Error with name<br />'; }
 
+	if (isset($_POST[$prefix.'type']) && trim($_POST[$prefix.'type']) != '') {
+		$sql .= ', `type` = "'.trim($_POST[$prefix.'type']).'"';
+	} else { $flag++; $msg.='Error with type<br />'; }
+
 
 	if (isset($_POST[$prefix.'default_text']) && trim($_POST[$prefix.'default_text']) != '') {
 		$sql .= ', `default_text` = "'.trim($_POST[$prefix.'default_text']).'"';
@@ -422,6 +426,7 @@ function validateImagePostData($imageID) {
  */
 function displayFieldEditor($field) {
 	global $fonts, $colours, $template, $fields;
+	
 
 	if ($field['id'] == 'new') {
 		echo '<tr class="header"><td colspan="2">New field</td></tr>';
@@ -447,9 +452,22 @@ function displayFieldEditor($field) {
 
 
 	echo '<div id="field'.$field['id'].'basic">';
+	
 
 	echo 'Field Name:<br /><input type="text" name="field-'.$field['id'].'-name" value="'.$field['name'].'" /><br />';
+	
+	
+	echo 'Type:&nbsp;&nbsp;&nbsp;';
+	
+	// <br />';
 
+	$types = getEnumValues('fields','type');
+        for ($i = 0; $i < count($types) ; $i++) {
+           echo('<input type="radio" name="field-'.$field['id'].'-type" id="field-'.$field['id'].'-type-'.$i.'" value="'.$types[$i].'" '.($types[$i]===$field['type']?'checked':'').' />&nbsp;');
+           echo('<label for="field-'.$field['id'].'-type-'.$i.'">'.ucfirst($types[$i]).'</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'); 
+	}
+	echo('<br>');
+	
 
 	echo 'Default Text:<br /><textarea rows="4" name="field-'.$field['id'].'-default_text">'.$field['default_text'].'</textarea><br />';
 
@@ -792,6 +810,16 @@ function isTTF($file) {
     }
     finfo_close($finfo);
     return($isTTF);
+}
+
+
+function getEnumValues($table, $field) {
+    $sql = "SHOW FIELDS FROM `{$table}` LIKE '{$field}'";
+    $result = mysqli_query(DB::$conn,$sql);
+    $row = mysqli_fetch_array($result);
+    preg_match('#^enum\((.*?)\)$#ism', $row['Type'], $matches);
+    $enum = str_getcsv($matches[1], ",", "'");
+    return $enum;
 }
 
 

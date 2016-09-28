@@ -181,7 +181,7 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 			}
 			
 			if ($field['type'] == 'wrapper') {
-			// insert content from data fields into wrapper fields
+			// insert content from normal/data fields into wrapper fields
 			// Pretty HACK-y at the moment...
 			      
 			      $sections = explode('{', $content);
@@ -191,8 +191,10 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 					$parts = explode('}', $section);
 					
 					// Set default data HACK
+					
+                                        $data = '{'.$parts[0].'}'; // Urgh. Always gets overridden, unless there's an error...
 					foreach ($fields as $searchField) {
-					    if ($searchField['id'] == $parts[0]) {
+					    if ($searchField['id'] === $parts[0]) {
 						$data = $searchField['default_text'];
 					    }
 					}

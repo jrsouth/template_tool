@@ -7,3 +7,4 @@ settings.php
 .phptidy-cache
 *.phptidybak~
 *~
+*.kate-swp

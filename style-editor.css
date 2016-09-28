@@ -189,7 +189,10 @@ input, textarea {
 	border: 1px solid #666666;
 	background-color: #dddddd;
 	margin: 0 0 1em 0;
-	width: auto;
+}
+
+input[type="radio"] {
+    width: auto;
 }
 
 input.short {
@@ -233,17 +236,6 @@ div.font-preview-fader {
     margin-bottom: -10em;
     background-image: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,1) 80%);
 }
-
-/*
- * {
-    width: 8em;
-    height: 10em;
-    position: relative;
-    float: right;
-    margin-bottom: -10em;
-    background-image: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,1) 80%);
-}
-*/
 
 div.font-block {
     margin: 1em 0;

@@ -444,6 +444,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
         'id' => 'new',
         'template_id' => $template['id'],
         'name' => (isset($_POST['field-new-name'])?$_POST['field-new-name']:''),
+        'type' => 'normal',
         'default_text' => (isset($_POST['field-new-default_text'])?$_POST['field-new-default_text']:''),
         'force_uppercase' => 0,
         'character_limit' => (isset($_POST['field-new-character_limit'])?$_POST['field-new-character_limit']:0),
