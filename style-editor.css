@@ -191,7 +191,7 @@ input, textarea {
 	margin: 0 0 1em 0;
 }
 
-input[type="radio"] {
+input[type="radio"], input[type="checkbox"],  {
     width: auto;
 }
 
