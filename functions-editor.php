@@ -275,7 +275,7 @@ function validateFieldPostData($fieldID) {
 	$sql = '`template_id` = '.$template['id'];
 
 	if (isset($_POST[$prefix.'name']) && trim($_POST[$prefix.'name']) != '') {
-		$sql .= ', `name` = "'.trim($_POST[$prefix.'name']).'"';
+		$sql .= ', `name` = "'.mysqli_real_escape_string(DB::$conn,trim($_POST[$prefix.'name'])).'"';
 	} else { $flag++; $msg.='Error with name<br />'; }
 
 	if (isset($_POST[$prefix.'type']) && trim($_POST[$prefix.'type']) != '') {
@@ -284,7 +284,7 @@ function validateFieldPostData($fieldID) {
 
 
 	if (isset($_POST[$prefix.'default_text']) && trim($_POST[$prefix.'default_text']) != '') {
-		$sql .= ', `default_text` = "'.trim($_POST[$prefix.'default_text']).'"';
+		$sql .= ', `default_text` = "'.mysqli_real_escape_string(DB::$conn,trim($_POST[$prefix.'default_text'])).'"';
 	} else { $flag++; $msg.='Error with default text<br />'; }
 
 
