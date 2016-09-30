@@ -121,19 +121,4 @@ if (isset($_GET['step'])) {
 	$step = 0;
 }
 
-//   if (!isset($template)) {
-//    $stage = 0;
-//   } else if (isset($data['complete'])) {
-//       $stage = 3;
-//   } else if (isset($data['finish'])) {
-//       $stage = 2;
-//   } else {
-//       $stage = 1;
-//   }
-// }
-
-
-
-
-
 ?>
