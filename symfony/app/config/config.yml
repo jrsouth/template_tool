@@ -47,6 +47,13 @@ doctrine:
         user:     "%database_user%"
         password: "%database_password%"
         charset:  UTF8
+        
+        # Fix for enum columns in MySQL
+        # From:
+        # http://symfony.com/doc/2.0/cookbook/doctrine/dbal.html#registering-custom-mapping-types-in-the-schematool
+        mapping_types:
+            enum: string
+        
         # if using pdo_sqlite as your database driver:
         #   1. add the path in parameters.yml
         #     e.g. database_path: "%kernel.root_dir%/data/data.db3"
