@@ -16,10 +16,9 @@ class CreateController extends Controller
     {
 
         if ($id === 0) {
-            return($this->render('default/index.html.twig'));
+            $colors = $this->get('dbutils')->getColors();
+            return($this->render('default/index.html.twig', ['colors' => $colors]));
         } else {
-            // Set up form
-            // or create parameters
             return($this->render('create/select.html.twig'));
         }
 
