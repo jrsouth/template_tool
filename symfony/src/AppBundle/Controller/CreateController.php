@@ -9,19 +9,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class CreateController extends Controller
 {
     /**
-     * @Route("/", name="create-template")
-     * @Route("/create/{id}/{downloadName}", name="create-template", requirements={"id": "\d+"})
+     * @Route("/create", name="select-template")
+     */
+    public function SelectTemplateAction($id = 0, $downloadName = null)
+    {
+            $templates = $this->get('dbutils')->getTemplates();
+            return($this->render('create/select.html.twig', ['templates' => $templates]));
+    }
+    
+    /**
+     * @Route("/create/{id}/{downloadName}", name="build-template", requirements={"id": "\d+"})
      */
     public function numberAction($id = 0, $downloadName = null)
     {
-
-        if ($id === 0) {
-            $colors = $this->get('dbutils')->getColors();
-            return($this->render('default/index.html.twig', ['colors' => $colors]));
-        } else {
-            return($this->render('create/select.html.twig'));
-        }
-
+            $template = $this->get('dbutils')->getTemplate($id);
+            return($this->render('create/build.html.twig', ['template' => $template]));
     }
 }
 

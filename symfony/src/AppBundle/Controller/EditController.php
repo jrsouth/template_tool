@@ -9,18 +9,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use AppBundle\Entity\Template;
 
-class TemplateEditController extends Controller
+class EditController extends Controller
 {
     /**
      * @Route("/edit/{id}", name="edit-template", requirements={"id": "\d+"})
      */
-    public function numberAction(Template $t)
+    public function templateEditAction(Template $t)
     {
-        $number = mt_rand(0, 100);
-
+    
         return $this->render('edit/templateEditor.html.twig', array(
             'template' => $t,
         ));
+
+    }
+    
+    /**
+     * @Route("/edit/new", name="edit-new-template")
+     */
+    public function newTemplateAction()
+    {
+
+        return $this->render('edit/templateCreator.html.twig');
 
     }
 }

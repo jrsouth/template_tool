@@ -1,0 +1,5 @@
+<div class="template-grid">
+{% for template in templates %}
+    {% include "create/template-grid-individual.html.twig" with { 'template' : template } %}
+{% endfor %}
+</div>

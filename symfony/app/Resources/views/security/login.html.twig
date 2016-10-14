@@ -1,25 +1,30 @@
 {% extends "base.html.twig" %}
 
-{% block body %}
+{% block content %}
 
 {% if error %}
     <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 {% endif %}
 
+{% if not app.user %}
+
+<h2>Login required</h2>
+
 <form action="{{ path('login') }}" method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="_username" value="{{ last_username }}" />
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="_password" />
-
-    {#
-        If you want to control the URL the user
-        is redirected to on success (more details below)
-        <input type="hidden" name="_target_path" value="/account" />
-    #}
-
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="_username" value="{{ last_username }}" />
+    </div>
+    
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="_password" />
+    </div>
+    
     <button type="submit">login</button>
 </form>
+
+{% endif %}
 
 {% endblock %}

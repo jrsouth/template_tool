@@ -1,0 +1,24 @@
+<a href="{{ path('build-template', { id : template.id }) }}"><div class="template-grid-individual">
+    <span></span>
+    
+    <div class="name">{{ template.name }}</div>
+    
+    <div class="thumbnail">
+    
+        {% if template.pageCount > 2 %}
+            <img src="/tools/create.php?view=thumbnail&amp;template_id={{ template.id }}" class="thumb-stack-3">
+        {% endif %}
+        
+        {% if template.pageCount > 1 %}
+            <img src="/tools/create.php?view=thumbnail&amp;template_id={{ template.id }}" class="thumb-stack-2">
+        {% endif %}
+        
+        <img src="/tools/create.php?view=thumbnail&amp;template_id={{ template.id }}">
+
+    </div>
+    
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('edit-template', { id : template.id }) }}" class="action-button">Edit</a>
+    {% endif %}
+        
+</div></a>

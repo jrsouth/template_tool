@@ -5,12 +5,12 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Colour
+ * Color
  *
  * @ORM\Table(name="colours")
  * @ORM\Entity
  */
-class Colour
+class Color
 {
     /**
      * @var string

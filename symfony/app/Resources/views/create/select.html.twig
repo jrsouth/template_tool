@@ -1,7 +1,19 @@
 {% extends "base.html.twig" %}
 
-{% block body %}
+{% block content %}
 
-<h1>Select a base template to customise</h1>
+<h2>Select a base template to customise</h2>
+
+<hr>
+
+{% include "create/template-grid.html.twig" with { 'templates' : templates } %}
+
+
+{% if is_granted('ROLE_ADMIN') %}
+    <hr>
+    <p><a href="{{ path('edit-new-template') }}" class="action-button">Create a new template</a></p>
+{% elseif show_login_link %}
+    <p><a href="{{ url('login') }}">Log in</a> to create or edit templates</p>
+{% endif %}
 
 {% endblock %}

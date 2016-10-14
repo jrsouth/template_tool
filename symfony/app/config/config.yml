@@ -7,6 +7,7 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    app.version: 0.2.12
 
 framework:
     #esi:             ~
@@ -38,7 +39,16 @@ twig:
     strict_variables: "%kernel.debug%"
     globals:
         site_name: '%site_name%'
+        site_version: '%app.version%'
+        show_login_link: '%show_login_link%'
 
+# Assetic Configuration
+assetic:
+    debug:          '%kernel.debug%'
+    use_controller: '%kernel.debug%'
+    filters:
+        cssrewrite: ~
+        scss: ~
 
 # Doctrine Configuration
 doctrine:

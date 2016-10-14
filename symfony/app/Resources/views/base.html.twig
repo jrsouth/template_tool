@@ -2,12 +2,34 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <title>{% block title %}{{ site_name }} Template Tool{% endblock %}</title>
+        {% stylesheets 'bundles/app/css/normalize.css' 'bundles/app/css/main.scss' filter='scss' %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+        {% block extrq_styles %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <div id="container">
+            <header>
+                <h1>{{ site_name }} <span>Template Tool</span></h1>
+                {% if app.user %}
+                    <a href="{{ logout_path() }}" class="action-button">Log out</a>
+                {% elseif show_login_link and not (path(app.request.attributes.get('_route')) matches '{^.*/login$}') %}
+                    <a href="{{ url('login') }}" class="action-button">Log in</a>
+                {% endif %}
+            </header>
+            
+
+
+            <div id="content">
+                {% block content %}Content missing{% endblock %}
+            </div>
+
+        </div>
+        <footer>
+            <p>Template Tool Version {{ site_version }} // Check it out on <a href="https://github.com/jrsouth/template_tool" target="_blank">GitHub</a></p>
+        </footer>
         {% block javascripts %}{% endblock %}
     </body>
 </html>
