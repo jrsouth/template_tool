@@ -320,6 +320,12 @@ function validateFieldPostData($fieldID) {
 		$_POST[$prefix.'wrap_width'] = 0;
 	}
 
+	if (isset($_POST[$prefix.'align'])) {
+		$sql .= ', `align` = "'.$_POST[$prefix.'align'] . '"';
+	} else {
+		$sql .= ', `align` = "left"';
+		$_POST[$prefix.'align'] = 'left';
+	}
 
 	if (isset($_POST[$prefix.'font_size']) && is_numeric($_POST[$prefix.'font_size'])) {
 		$sql .= ', `font_size` = '.$_POST[$prefix.'font_size'];
@@ -501,8 +507,15 @@ function displayFieldEditor($field) {
 	echo 'Y-pos (mm): <input class="short" type="text" name="field-'.$field['id'].'-y_position" value="'.$field['y_position'].'" /><br />';
 
 	echo 'Wrap width (if applicable):<br /><input class="short" type="text" name="field-'.$field['id'].'-wrap_width" value="'.$field['wrap_width'].'" /><br />';
-
-
+	
+	echo 'Text alignment (used when wrap width is set): <select name="field-'.$field['id'].'-align">';
+	
+        // ALIGN SELECTOR
+	foreach (['left', 'center', 'right'] as $align) {
+		echo '<option value="'.$align.'"'.($field['align']===$align?' selected="selected"':'').'>'.ucfirst($align).'</option>';
+	}
+	echo '</select> ';
+	
 	echo '</div>';
 
 
