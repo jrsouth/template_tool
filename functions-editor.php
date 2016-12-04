@@ -511,7 +511,7 @@ function displayFieldEditor($field) {
 	echo 'Text alignment (used when wrap width is set): <select name="field-'.$field['id'].'-align">';
 	
         // ALIGN SELECTOR
-	foreach (['left', 'center', 'right'] as $align) {
+	foreach (array('left', 'center', 'right') as $align) {
 		echo '<option value="'.$align.'"'.($field['align']===$align?' selected="selected"':'').'>'.ucfirst($align).'</option>';
 	}
 	echo '</select> ';
