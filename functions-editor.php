@@ -508,7 +508,7 @@ function displayFieldEditor($field) {
 
 	echo 'Wrap width (if applicable):<br /><input class="short" type="text" name="field-'.$field['id'].'-wrap_width" value="'.$field['wrap_width'].'" /><br />';
 	
-	echo 'Text alignment (used when wrap width is set): <select name="field-'.$field['id'].'-align">';
+	echo 'Text alignment (used when wrap width is set): <select name="field-'.$field['id'].'-align"><br />';
 	
         // ALIGN SELECTOR
 	foreach (array('left', 'center', 'right') as $align) {
