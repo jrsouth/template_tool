@@ -372,7 +372,6 @@ function displayPDF($pdffile, $view, $templateID, $page = 1) {
 function getTemplateName($template_id) {
 	$sql = 'SELECT `name` FROM `templates` WHERE `id` = ' . $template_id;
 	$result = mysqli_fetch_assoc(mysqli_query(DB::$conn,$sql));
-echo('Template ID: ' . $template_id . ' || Name = ' . $result['name']);
 	return($result['name']);
 }
 
