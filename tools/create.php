@@ -28,11 +28,11 @@ $preview_location = $cache_path . 'default/template_'.$template['id'].'_p' . (is
 
 
 // Quick check for existing thumbnail or default preview - serve if available
-if (isset($_POST['view']) && $_POST['view'] == 'thumbnail' && file_exists($thumbnail_location)) {
+if (isset($_GET['view']) && $_GET['view'] == 'thumbnail' && file_exists($thumbnail_location)) {
 	header("Content-type: image/png");
 	readfile($thumbnail_location);
 	exit();
-} else if (isset($_POST['reset']) && isset($_POST['view']) && $_POST['view'] == 'preview' && file_exists($preview_location)) {
+} else if (isset($_GET['reset']) && isset($_GET['view']) && $_GET['view'] == 'preview' && file_exists($preview_location)) {
 	header("Content-type: image/png");
 	readfile($preview_location);
 	exit();
