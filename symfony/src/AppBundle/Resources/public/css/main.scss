@@ -181,6 +181,7 @@ form:after {
     }
     
     img {
+        vertical-align: top;
         position: relative;
         @include shadow();
     }
