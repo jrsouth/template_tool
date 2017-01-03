@@ -155,7 +155,7 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 
 
 		foreach ($fields as $field) {
-		if ($field['type'] != 'data') {
+		if ($field['type'] !== 'data' && $field['type'] !== 'url') {
 
 			// Get font details
 			$sql = 'SELECT * FROM `fonts` WHERE `id` = ' . $field['font_id'];
@@ -180,7 +180,7 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 				$content = $working_template['f'.$field['id']];
 			}
 			
-			if ($field['type'] == 'wrapper') {
+			if ($field['type'] === 'wrapper') {
 			// insert content from normal/data fields into wrapper fields
 			// Pretty HACK-y at the moment...
 			      
@@ -218,9 +218,8 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 			if ($field['force_uppercase']) {
 				$content = strtoupper($content);
 			}
-
-			// Add in \n line breaks
-			// $content = "Test\nline2";
+			
+			$link = getFieldLink($field['id'], $working_template);
 
 			$pdf->AddFont($font['name'], '', $font['font_file'].'.php');
 			$pdf->SetFont($font['name']);
@@ -228,20 +227,19 @@ if (isset($template['pdf_file']) && file_exists($base_path . 'storage/templates/
 			$pdf->SetFontSpacing($field['tracking']); // XXXX TESTING ONLY
 			$pdf->SetTextColor($colourValue['R'], $colourValue['G'], $colourValue['B']); // Need to convert CMYK to RGB (or allow CMYK text)
 			$leadingmm = 0.352777778 * $field['leading']; // Convert points to mm
-			$align = strtoupper($field['align'][0]); // First char maps to FPDF align value.
+			$align = strtoupper($field['align'][0]); // First char maps to FPDF align value (L)eft/(R)ight/(C)enter/(J)ustify.
 			if ($field['parent'] > 0) {
 				// Put the text under the parent - using the same wrapping, offset by y_position
 				//$pdf->Ln();
 				$pdf->SetY($pdf->GetY()+$field['y_position']);
 				// Original Write method // $pdf->Write($leadingmm, $content);
-				$pdf->MultiCell(0, $leadingmm, $content, 0, $align);
+				$pdf->MultiCell(0, $leadingmm, $content, 0, $align, 0, $link);
 			} else if ($field['wrap_width'] > 0) {
-                                    // Reset wrapping and put the text within a bounding box
-                                    $pdf->SetXY($field['x_position'], $field['y_position']);
-                                    $pdf->setRightMargin($page_size['w']-$field['x_position']-$field['wrap_width']);
-                                    $pdf->setLeftMargin($field['x_position']);
-                                    // Original Write method // $pdf->Write($leadingmm, $content);
-                                    $pdf->MultiCell(0, $leadingmm, $content, 0, $align);
+                                // Reset wrapping and put the text within a bounding box
+                                $pdf->SetXY($field['x_position'], $field['y_position']);
+                                $pdf->setRightMargin($page_size['w']-$field['x_position']-$field['wrap_width']);
+                                $pdf->setLeftMargin($field['x_position']);
+                                $pdf->MultiCell(0, $leadingmm, $content, 0, $align, 0, $link);
                             } else {
 				// Put single-line text at defined point (baseline)
 				$pdf->Text($field['x_position'], $field['y_position'], $content);

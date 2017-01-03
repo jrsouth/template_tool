@@ -465,8 +465,6 @@ function displayFieldEditor($field) {
 	
 	echo 'Type:&nbsp;&nbsp;&nbsp;';
 	
-	// <br />';
-
 	$types = getEnumValues('fields','type');
         for ($i = 0; $i < count($types) ; $i++) {
            echo('<input type="radio" name="field-'.$field['id'].'-type" id="field-'.$field['id'].'-type-'.$i.'" value="'.$types[$i].'" '.($types[$i]===$field['type']?'checked':'').' />&nbsp;');
@@ -511,8 +509,10 @@ function displayFieldEditor($field) {
 	echo 'Text alignment (used when wrap width is set): <select name="field-'.$field['id'].'-align"><br />';
 	
         // ALIGN SELECTOR
-	foreach (array('left', 'center', 'right') as $align) {
-		echo '<option value="'.$align.'"'.($field['align']===$align?' selected="selected"':'').'>'.ucfirst($align).'</option>';
+        
+	$alignments = getEnumValues('fields','align');
+	foreach ($alignments as $key => $value) {
+		echo '<option value="'.$value.'"'.($field['align']===$value?' selected="selected"':'').'>'.ucfirst($value).'</option>';
 	}
 	echo '</select> ';
 	
@@ -555,7 +555,7 @@ function displayFieldEditor($field) {
 /**
  *
  *
- * @param unknown $field
+ * @param unknown $image
  */
 function displayImageEditor($image) {
 	global $fonts, $colours, $template, $images;
@@ -758,19 +758,6 @@ function getTemplateImages($template_id) {
 }
 
 
-/**
- *
- *
- * @param unknown $field_id
- * @return unknown
- */
-function getField($field_id) {
-	
-	$sql = 'SELECT * FROM `fields` WHERE `id` = '.$field_id;
-	$results = mysqli_query(DB::$conn,$sql);
-	$field = mysqli_fetch_array($results);
-	return $field;
-}
 /**
  *
  *

@@ -677,7 +677,7 @@ function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false, $link
 		$this->x += $w;
 }
 
-function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
+function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false, $link='')
 {
 	// Output text with automatic or explicit line breaks
 	$cw = &$this->CurrentFont['cw'];
@@ -725,7 +725,7 @@ function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
 				$this->ws = 0;
 				$this->_out('0 Tw');
 			}
-			$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+			$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill,$link);
 			$i++;
 			$sep = -1;
 			$j = $i;
@@ -755,7 +755,7 @@ function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
 					$this->ws = 0;
 					$this->_out('0 Tw');
 				}
-				$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+				$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill,$link);
 			}
 			else
 			{
@@ -764,7 +764,7 @@ function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
 					$this->ws = ($ns>1) ? ($wmax-$ls)/1000*$this->FontSize/($ns-1) : 0;
 					$this->_out(sprintf('%.3F Tw',$this->ws*$this->k));
 				}
-				$this->Cell($w,$h,substr($s,$j,$sep-$j),$b,2,$align,$fill);
+				$this->Cell($w,$h,substr($s,$j,$sep-$j),$b,2,$align,$fill,$link);
 				$i = $sep+1;
 			}
 			$sep = -1;
@@ -786,7 +786,7 @@ function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
 	}
 	if($border && strpos($border,'B')!==false)
 		$b .= 'B';
-	$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
+	$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill,$link);
 	$this->x = $this->lMargin;
 }
 

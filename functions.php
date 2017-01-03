@@ -693,7 +693,7 @@ function generateSimpleHTMLForm($templateID) {
         if (count($fields) > 0) {
             $html .= "\n\t\n\t\n\t" . '<!-- Inputs for all editable text fields -->';
             foreach ($fields as $f) {
-                if ($f['type'] != 'wrapper') {
+                if ($f['type'] !== 'wrapper') {
                     $html .= "\n\t\n\t" . '<label for="f'.$f['id'].'">'.$f['name'].'</label><br>';
                     if ($f['wrap_width'] > 0) { // If it's a wrapping box
                             $html .= "\n\t" . '<textarea name="f'.$f['id'].'" id="f'.$f['id'].'"></textarea><br>';
@@ -771,3 +771,41 @@ function getFont($font_id) {
 	$sql = 'SELECT * FROM `fonts` WHERE `id` = '.$font_id;
 	return(mysqli_fetch_array(mysqli_query(DB::$conn,$sql)));
 }
+
+
+/**
+ *
+ *
+ * @param unknown $field_id
+ * @return unknown
+ */
+function getField($field_id) {
+	
+	$sql = 'SELECT * FROM `fields` WHERE `id` = '.$field_id;
+	$results = mysqli_query(DB::$conn,$sql);
+	$field = mysqli_fetch_array($results);
+	return $field;
+}
+
+
+function getFieldLink($field_id, $working_template) {
+
+    $sql = "SELECT `id` FROM `fields` WHERE `type` = 'url' AND `parent` = {$field_id}";
+    $result = mysqli_query(DB::$conn,$sql);
+    if (mysqli_num_rows($result) !== 1) { // No result (or more than one) so return empty string
+        return('');
+    }
+    
+    $url_field = getField(mysqli_fetch_array($result)[0]);
+    
+    // Set default text
+    $url = $url_field['default_text'];
+
+    // Replace with text provided if available
+    if (isset($working_template['f'.$url_field['id']])) {
+        $url = $working_template['f'.$url_field['id']];
+    }
+
+    return($url);
+}
+

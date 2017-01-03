@@ -456,6 +456,7 @@ if (isset($_POST['template_id']) && $_POST['template_id'] != 'new') {
         'wrap_width' => (isset($_POST['field-new-wrap_width'])?$_POST['field-new-wrap_width']:''),
         'leading' => (isset($_POST['field-new-leading'])?$_POST['field-new-leading']:''),
         'tracking' => (isset($_POST['field-new-tracking'])?$_POST['field-new-tracking']:'0'),
+        'align' => (isset($_POST['field-new-align'])?$_POST['field-new-align']:'left'),
         'parent' => 0,
         'page' => 1,
     );
